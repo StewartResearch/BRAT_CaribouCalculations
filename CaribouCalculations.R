@@ -2,7 +2,7 @@
 # Caribou calculations
 # for BRAT paper: Winder et al. in prep at Frontiers in Ecology and Evolution
 # January 2019
-# Code by Eliot McIntire, annotation by Frances Stewart
+# By Eliot McIntire and Frances Stewart
 #################################################################################
 
 # Objectives: ----
@@ -237,7 +237,7 @@ print(postMitigate)
 
 ###########################
 ###########################
-# An entire example - Chinchaga herd (STUDY AREA 3)---- 
+# Chinchaga herd (STUDY AREA 1) ---- 
 ###########################
 # measuring lambda and associated thresholds for the Hazards: Part I ----
 
@@ -308,7 +308,7 @@ mortQuantile <- qnorm(0.4, mean = 1, sd1) # mortality quartile is at the 40% mar
 ### This is the frequency we need to try and aim above, to prevent lambda being consistently below 1, given a population sd of 0.1
 # in this case it is:
 print( (1 - mortQuantile) + 1)
-
+# 1.02
 
 # Step 5: then calculate how the existing threats, and barriers to those threats, affect this quartile:
 ### Threat 1
@@ -364,7 +364,7 @@ Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate du
 predationAdultRev <- function(TopEventFreq, avoid, seismic, huntPred, earlySeral, huntCaribou, huntAltPrey) { # calculate the initial frequency of predation given the current frequency and the values of the thresholds
   TopEventFreq/ (avoid * seismic * huntPred * earlySeral * huntCaribou * huntAltPrey)
 }
-Threat1_InitialFreq<- predationAdultRev(Threat1_multiplier, 2, 1.5, 0.65, 1.1, 1, 0.9)
+Threat1_InitialFreq<- predationAdult(Threat1_topEvent, 2, 1.5, 0.65, 1.1, 1, 0.9)
 
 
 # Threat 2 - juvenile predation
@@ -403,7 +403,7 @@ Threat3_topevent = Threat3_multiplier
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
-Threat3_InitialFreq <- habitatAppropriation(Threat3_multiplier, 0.95, 1, 1)
+Threat3_InitialFreq <- Threat3_multiplier*(prod(0.95* 1* 1))
 
 
 # Threat 4: Stresses reducing caribou fitness and health
@@ -412,7 +412,7 @@ Threat4_topevent <- Threat4_multiplier
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
-Threat4_InitialFreq <- stress(Threat4_multipler, 1.5, 0.8, 1, 1, 1)
+Threat4_InitialFreq <- Threat4_multiplier*(prod(1, 0.8, 1, 1, 1))
 ########################################################################################################################################################
 
 
@@ -433,19 +433,20 @@ mitigate <- function(cull, dd, pens){
   cull * dd * pens
 }
 
-### START HERE ----
-topEvent <- topEvent(predationAdultRev(Threat1_InitialFreq, 2, 1.5, 0.65, 1.1, 1, 0.9), # this is currently WRONG, each of the threat multiplier values
-                     predationJuvRev(Threat2_InitialFreq, 2.2), # need to be replaced with the Initial values - but when I try this I get green, green
-                     habitatAppropriation(Threat3_InitialFreq, 0.95, 1, 1), # need to go back to the BRAT docx and double check the values.
-                     stress(Threat4_InitialFreq, 1.5, 0.8, 1, 1, 1))
-#### START HERE ---
+
+topEvent <- topEvent(predationAdultRev(Threat1_InitialFreq, 2, 1.5, 0.65, 1.1, 1, 0.9), 
+                     predationJuvRev(Threat2_InitialFreq, 2.19), 
+                     habitatAppropriation(Threat3_InitialFreq, 0.95, 1, 1), 
+                     stress(Threat4_InitialFreq, 1, 0.8, 1, 1, 1))
+
 
 postMitigate <- function(topEvent, mitigate) {
   topEvent * mitigate
 }
 
-postMitigate <- postMitigate(topEvent, mitigate(0.81, 1, 0.95))
+postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 0.95))
 
+#### START HERE ----
 
 # Step 7: look at the hazard and consequence values, and compare
 message("Lambdas: ")
@@ -464,6 +465,7 @@ print(out2)
 # CURRENTLY NOT WORKING!!
 # RE-TRY AFTER ANDREW GIVES US NEW DATA.
 
+###### START HERE 
 
 
 
