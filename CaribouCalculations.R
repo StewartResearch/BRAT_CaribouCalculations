@@ -214,19 +214,27 @@ mitigate <- function(cull, dd, pens){
 }
 
 
-topEvent <- topEvent(predationAdult(Threat1_InitialFreq, 2, 1.5, 0.65, 1.1, 1, 0.9), 
-                     predationJuv(Threat2_InitialFreq, 2.19), 
-                     habitatAppropriation(Threat3_InitialFreq, 0.95, 1, 1), 
-                     stress(Threat4_InitialFreq, 1, 0.8, 1, 1, 1))
+###
+#topEvent <- topEvent(predationAdult(Threat1_InitialFreq, 2, 1.5, 0.65, 1.1, 1, 0.9), # combined mitigation/normal scenario
+ #                    predationJuv(Threat2_InitialFreq, 2.19), 
+  #                   habitatAppropriation(Threat3_InitialFreq, 0.95, 1, 1), 
+   #                  stress(Threat4_InitialFreq, 1, 0.8, 1, 1, 1))
 
+topEvent <- topEvent(predationAdult(Threat1_InitialFreq, 2, 1.5, 0.65, 2, 1, 0.9), # climate change scenario
+                     predationJuv(Threat2_InitialFreq, 2.19), 
+                     habitatAppropriation(Threat3_InitialFreq, 0.95, 2, 1), 
+                     stress(Threat4_InitialFreq, 2, 2, 2, 1, 1))
+###
 
 postMitigate <- function(topEvent, mitigate) {
   topEvent * mitigate
 }
 
-postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 0.95))
-#postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 0.95))
-
+#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 1)) # this is the maternity pen lever - acting solo
+#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is the maternity pen lever - acting solo
+#postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 1)) # this is wolf cull lever - acting solo.
+#postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 0.95)) # combined mitigation/normal scenario
+postMitigate <- postMitigate(topEvent, mitigate(1, 1, 1)) # Climate change scenario
 
 # Step 7: look at the hazard and consequence values, and compare
 message("Lambdas: ")
@@ -451,19 +459,21 @@ mitigate <- function(cull, dd, pens){
 }
 
 
-topEvent <- topEvent(predationAdult(Threat1_InitialFreq, 2, 1.5, 0.65, 1.1, 1, 0.9), 
+topEvent <- topEvent(predationAdult(Threat1_InitialFreq, 2, 1.5, 0.65, 2, 1, 0.9), # climate change scenario
                      predationJuv(Threat2_InitialFreq, 2.19), 
-                     habitatAppropriation(Threat3_InitialFreq, 0.95, 1, 1), 
-                     stress(Threat4_InitialFreq, 1, 0.8, 1, 1, 1))
-
+                     habitatAppropriation(Threat3_InitialFreq, 0.95, 2, 1), 
+                     stress(Threat4_InitialFreq, 2, 2, 2, 1, 1))
+###
 
 postMitigate <- function(topEvent, mitigate) {
   topEvent * mitigate
 }
 
-postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 0.95))
-#postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 0.95))
-
+#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 1)) # this is the maternity pen lever - acting solo
+#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is the maternity pen lever - acting solo
+#postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 1)) # this is wolf cull lever - acting solo.
+#postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 0.95)) # combined mitigation/normal scenario
+postMitigate <- postMitigate(topEvent, mitigate(1, 1, 1)) # Climate change scenario
 
 # Step 7: look at the hazard and consequence values, and compare
 message("Lambdas: ")
@@ -687,18 +697,21 @@ mitigate <- function(cull, dd, pens){
 }
 
 
-topEvent <- topEvent(predationAdult(Threat1_InitialFreq, 2, 1.5, 0.65, 1.1, 1, 0.9), 
+topEvent <- topEvent(predationAdult(Threat1_InitialFreq, 2, 1.5, 0.65, 2, 1, 0.9), # climate change scenario
                      predationJuv(Threat2_InitialFreq, 2.19), 
-                     habitatAppropriation(Threat3_InitialFreq, 0.95, 1, 1), 
-                     stress(Threat4_InitialFreq, 1, 0.8, 1, 1, 1))
-
+                     habitatAppropriation(Threat3_InitialFreq, 0.95, 2, 1), 
+                     stress(Threat4_InitialFreq, 2, 2, 2, 1, 1))
+###
 
 postMitigate <- function(topEvent, mitigate) {
   topEvent * mitigate
 }
 
-postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 0.95))
-#postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 0.95))
+#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 1)) # this is the maternity pen lever - acting solo
+#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is the maternity pen lever - acting solo
+#postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 1)) # this is wolf cull lever - acting solo.
+#postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 0.95)) # combined mitigation/normal scenario
+postMitigate <- postMitigate(topEvent, mitigate(1, 1, 1)) # Climate change scenario
 
 
 # Step 7: look at the hazard and consequence values, and compare
