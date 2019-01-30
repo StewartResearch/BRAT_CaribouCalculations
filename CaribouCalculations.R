@@ -233,7 +233,7 @@ Threat4_barriers <- c(1.5, 0.8, 1.25, 1.25, 1)  # in units of Initial Frequency
                                threatCalculator(Threat2_InitialFreq, Threat2_barriers), 
                                threatCalculator(Threat3_InitialFreq, Threat3_barriers), 
                                threatCalculator(Threat4_InitialFreq, Threat4_barriers)))
-message("This is the top event lambda: ", round(1 + (1 - topEvent), 2)) # this should be around 0.93 (ECCC 2008), but slightly lower as we know that
+message("This is the top event lambda: ", round(1 + (1 - topEvent), 3)) # this should be around 0.93 (ECCC 2008), but slightly lower as we know that
 # Chinchaga herd is declining (ie, below our threshold of 0.93 for 40% probability of stability)
 ###
 
@@ -244,7 +244,7 @@ postMitigate <- function(topEvent, mitigate) {
 #postMitigate <- postMitigate(topEvent, mitigate(1, 1, 1)) # this is the maternity pen lever - acting solo
 #postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is the maternity pen lever - acting solo
 #postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 1)) # this is wolf cull lever - acting solo.
-postMitigate <- postMitigate(topEvent, mitigate(0.85, 0.95, 1)) # combined mitigation/normal scenario
+postMitigate <- postMitigate(topEvent, mitigate(0.814, 0.950, 1)) # combined mitigation/normal scenario
 #postMitigate <- postMitigate(topEvent, mitigate(1, 1, 1)) # Climate change scenario
 
 # Step 7: look at the hazard and consequence values, and compare
@@ -277,14 +277,14 @@ Threat_LambdaEffect[[2]] <- Threat2_InitialFreq * Threat2_barriers - Threat2_Ini
 Threat_LambdaEffect[[3]] <- Threat3_InitialFreq * Threat3_barriers - Threat3_InitialFreq # in Lambda units
 Threat_LambdaEffect[[4]] <- Threat4_InitialFreq * Threat4_barriers - Threat4_InitialFreq # in Lambda units
 
-wolfCullEffect <- 0.14
+wolfCullEffect <- 18.6
 #  So, 0.444 is predator effect on calves -- partition into "non-compensated wolf" == "True effect of wolves on calves" 
-#     and "other" e.g., 0.14 is max possible... partition amongst adults and juvs e.g., 0.9 and 0.1 -->
-#     0.9 * 0.14 on calves and 0.1 * 0.14  on adults
+#     and "other" e.g., 0.186 is max possible... partition amongst adults and juvs e.g., 0.9 and 0.1 -->
+#     0.9 * 0.186 on calves and 0.1 * 0.186  on adults
 #  "other predation" for adults = 0.08775 - 0.1 * wolfCullEffect = 0.07375 in Lambda units
 #  "other predation" for adults = 
-wolvesOnAdults <- 0.1 * wolfCullEffect # =  0.07375 in Lambda units
-otherOnAdults <- Threat_LambdaEffect[[1]][1] - wolvesOnAdults # =  0.07375 in Lambda units
+wolvesOnAdults <- 0.1 * wolfCullEffect # =  1.86 in Lambda units
+otherOnAdults <- Threat_LambdaEffect[[1]][1] - wolvesOnAdults # =  0.07375 in Lambda units *****
 #  "other predation" for calves = 0.444584 - 0.9 * wolfCullEffect = 0.3185 in Lambda units
 #  "other predation" for calves = 
 wolvesOnJuvs <- 0.9 * wolfCullEffect
