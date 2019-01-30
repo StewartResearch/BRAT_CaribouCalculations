@@ -262,10 +262,10 @@ print( (1 - postMitigate) + 1) # this is the current consequence frequency
 
 
 # Print associated lopa crit messages by comparing these values:
-out1 <- ifelse(topEvent >= mortQuantile, "Red - caribou population growth rate is persistently below 1", "Green - caribou population growthrate is above 1")
-out2 <- ifelse(postMitigate >= mortQuantile, "Red - caribou extirpated", "Green - caribou recovered")
-print(out1)
-print(out2)
+#out1 <- ifelse(topEvent >= mortQuantile, "Red - caribou population growth rate is persistently below 1", "Green - caribou population growthrate is above 1")
+#out2 <- ifelse(postMitigate >= mortQuantile, "Red - caribou extirpated", "Green - caribou recovered")
+#print(out1)
+#print(out2)
 # Your solution!
 
 ############################################
@@ -277,17 +277,17 @@ Threat_LambdaEffect[[2]] <- Threat2_InitialFreq * Threat2_barriers - Threat2_Ini
 Threat_LambdaEffect[[3]] <- Threat3_InitialFreq * Threat3_barriers - Threat3_InitialFreq # in Lambda units
 Threat_LambdaEffect[[4]] <- Threat4_InitialFreq * Threat4_barriers - Threat4_InitialFreq # in Lambda units
 
-wolfCullEffect <- 18.6
+wolfCullEffect <- 0.14
 #  So, 0.444 is predator effect on calves -- partition into "non-compensated wolf" == "True effect of wolves on calves" 
 #     and "other" e.g., 0.186 is max possible... partition amongst adults and juvs e.g., 0.9 and 0.1 -->
-#     0.9 * 0.186 on calves and 0.1 * 0.186  on adults
+#     0.9 * 0.14 on calves and 0.1 * 0.14  on adults
 #  "other predation" for adults = 0.08775 - 0.1 * wolfCullEffect = 0.07375 in Lambda units
 #  "other predation" for adults = 
-wolvesOnAdults <- 0.1 * wolfCullEffect # =  1.86 in Lambda units
+wolvesOnAdults <- 0.1 * wolfCullEffect # =  0.014 in Lambda units
 otherOnAdults <- Threat_LambdaEffect[[1]][1] - wolvesOnAdults # =  0.07375 in Lambda units *****
 #  "other predation" for calves = 0.444584 - 0.9 * wolfCullEffect = 0.3185 in Lambda units
 #  "other predation" for calves = 
-wolvesOnJuvs <- 0.9 * wolfCullEffect
+wolvesOnJuvs <- 0.9 * wolfCullEffect # 0.126 in lambda units
 otherOnJuvs <- Threat_LambdaEffect[[2]][1] - wolvesOnJuvs # = 0.3185 in Lambda units
 
 
@@ -302,8 +302,62 @@ d <- ((wolvesOnAdults) + Threat1_InitialFreq[1]) / Threat1_InitialFreq[1]
 f <- ((wolvesOnJuvs) + Threat2_InitialFreq) / Threat2_InitialFreq
 
 wolfCullEffect * 0.1
+(a - 1)  + (d - 1)  + 1 # in initial units
 
-(a - 1)  + (d - 1)  + 1
+
+#######
+# Frances re-trying the above but with real values for the wolfcull 
+#######
+Threat1_barriers <- c(1.75, 1.5, 0.65, 1.05, 1, 0.9, 1) # in units of Initial Frequency
+Threat2_barriers <- c(2.19) # in units of Initial Frequency
+Threat3_barriers <- c(0.95, 1, 1) # in units of Initial Frequency
+Threat4_barriers <- c(1.5, 0.8, 1.25, 1.25, 1)  # in units of Initial Frequency
+
+
+Threat_LambdaEffect <- list()
+Threat_LambdaEffect[[1]] <- Threat1_InitialFreq * Threat1_barriers - Threat1_InitialFreq # in Lambda units
+Threat_LambdaEffect[[2]] <- Threat2_InitialFreq * Threat2_barriers - Threat2_InitialFreq # in Lambda units
+Threat_LambdaEffect[[3]] <- Threat3_InitialFreq * Threat3_barriers - Threat3_InitialFreq # in Lambda units
+Threat_LambdaEffect[[4]] <- Threat4_InitialFreq * Threat4_barriers - Threat4_InitialFreq # in Lambda units
+
+wolfCullEffect <- 0.186 # i.e. lambda has the potential to increase by 18.6% during a full wolf cull.
+# Hervieux et al found lambda increased between 4.6 and 14% during a 50% wolf cull. We avereaged these fundings, and standardized by 50% wolf cull to get the 18.6%
+# this assumes a linear relationship
+
+Threat_LambdaEffect[[2]]
+#  So, 0.444 is predator effect on calves -- partition into "non-compensated wolf" == "True effect of wolves on calves" 
+#     and "other" e.g., 0.186 is max possible... partition amongst adults and juvs e.g., 0.9 and 0.1 -->
+#     0.9 * 0.186 on calves and 0.1 * 0.186  on adults
+#  "other predation" for adults = 0.08775 - (0.1 * wolfCullEffect) = 0.07375 in Lambda units
+#     i.e. Threat_LambdaEffect[[1]] - (0.1*wolfcullEffect)
+#  "other predation" for adults = 
+wolvesOnAdults <- 0.1 * wolfCullEffect # =  0.0186 in Lambda units
+otherOnAdults <- Threat_LambdaEffect[[1]][1] - wolvesOnAdults # =  0.0692 in Lambda units
+#  "other predation" for calves = 0.444584 - 0.9 * wolfCullEffect = 0.277 in Lambda units
+#     i.e. Threat_Lambda[[2]] - (0.1*wolfcullEffect)
+#  "other predation" for calves = 
+wolvesOnJuvs <- 0.9 * wolfCullEffect # 0.167 in lambda units
+otherOnJuvs <- Threat_LambdaEffect[[2]][1] - wolvesOnJuvs # = 0.277 in Lambda units
+
+
+#   In InitialEvent units --> (0.06915 + Threat1_InitialFreq) / Threat1_InitialFreq
+a <- (otherOnAdults + Threat1_InitialFreq[1]) / Threat1_InitialFreq[1]
+#   In InitialEvent units --> (0.277 + Threat2_InitialFreq) / Threat2_InitialFreq
+b <- (otherOnJuvs + Threat2_InitialFreq[1]) / Threat2_InitialFreq[1]
+#   Wolf part In InitialEvent units --> ((0.0186 - 0.07375) + Threat1_InitialFreq) / Threat1_InitialFreq
+d <- ((wolvesOnAdults) + Threat1_InitialFreq[1]) / Threat1_InitialFreq[1]
+#   Wolf part In InitialEvent units --> ((0.444584 - 0.3185) + Threat2_InitialFreq) / Threat2_InitialFreq
+# Wolf part In InitialEvent units --> 
+f <- ((wolvesOnJuvs) + Threat2_InitialFreq) / Threat2_InitialFreq
+
+# check to see if this matches the value of inital units of the barrier for threat 1, barrier 1:
+wolfCullEffect * 0.1 # for adults
+(a - 1)  + (d - 1)  + 1 # in initial units
+# should equal:
+Threat1_barriers[[1]] # :)
+# also, lambda values should equal
+#Threat1_LambdaEffect = wolvesOnAdults + otherOnAdults # check
+#Threat2_LambdaEffect = wolvesOnAdults + otherOnJuvs # check
 
 
 
