@@ -87,8 +87,8 @@ mortQuantile <- qnorm(0.4, mean = 1, sd1) # mortality quartile is at the 40% mar
 # Step 4: put this mortQuantile into the Target frequency of the Hazard box
 ### This is the frequency we need to try and aim above, to prevent lambda being consistently below 1, given a population sd of 0.1
 # in this case it is:
-print( (1 - mortQuantile) + 1)
-# 1.07
+print( mortQuantile) 
+# 0.923
 
 threatCalculator <- function(init, barriers) {
   init * prod(barriers)

@@ -162,7 +162,7 @@ Threat4_topevent <- Threat4_multiplier
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
 Threat4_InitialFreq <- Threat4_multiplier*(prod(1, 0.8, 1, 1, 1))
-################################################################################################################################################
+
 
 #######################################################
 # step 6: Convert the inital frequency values to values of lambda:
@@ -182,6 +182,10 @@ wolfCullEffect <- 0.186 # i.e. lambda has the potential to increase by 18.6% dur
 # Hervieux et al found lambda increased between 4.6 and 14% during a 50% wolf cull. We avereaged these fundings, and standardized by 50% wolf cull to get the 18.6%
 # this assumes a linear relationship
 
+#############################################################################################################################
+# Step 6b
+# we now wanted to stplit this up between the effect of predation by wolves, and the effect of predation as a compensatory effect (or "other)
+# and state it in terms of lmabda units
 Threat_LambdaEffect[[2]]
 #  So, 0.444 is predator effect on calves -- partition into "non-compensated wolf" == "True effect of wolves on calves" 
 #     and "other" e.g., 0.186 is max possible... partition amongst adults and juvs e.g., 0.9 and 0.1 -->
@@ -231,16 +235,10 @@ topEventCalculator <- function(...) {
 
 # Consequency Frequency Function
 # Calculate lambda after mitigation actions take place
-mitigate <- function(cull, dd, pens){
-  cull * dd * pens
+mitigate <- function(cull, pens, rs){
+  cull * pens* rs
 }
 
-
-###
-#topEvent <- topEvent(predationAdult(Threat1_InitialFreq, 2, 1.5, 0.65, 1.1, 1, 0.9), # combined mitigation/normal scenario
-#                    predationJuv(Threat2_InitialFreq, 2.19), 
-#                   habitatAppropriation(Threat3_InitialFreq, 0.95, 1, 1), 
-#                  stress(Threat4_InitialFreq, 1, 0.8, 1, 1, 1))
 
 Threat1_barriers <- c(1.75, 1.5, 0.65, 1.05, 1, 0.9, 1) # in units of Initial Frequency
 Threat2_barriers <- c(2.19) # in units of Initial Frequency
@@ -260,12 +258,18 @@ postMitigate <- function(topEvent, mitigate) {
   topEvent * mitigate
 }
 
-#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 1)) # this is the maternity pen lever - acting solo
-#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is the maternity pen lever - acting solo
-#postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 1)) # this is wolf cull lever - acting solo.
-postMitigate <- postMitigate(topEvent, mitigate(0.814, 0.950, 1)) # combined mitigation/normal scenario
-#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 1)) # Climate change scenario
+postMitigate <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.95)) # combined mitigation/normal scenario
 
+#######################
+# Step 6 b: look at different management scenarios by changing the alternate value to equal 1 (i.e. no effect)
+# un comment below lines to look at these strategies, and how the postmitigate value changes
+
+#postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
+#postMitigate <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
+postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
+## then run the below code for the final lambda values of these situations.
+
+#################################################################
 # Step 7: look at the hazard and consequence values, and compare
 message("Lambdas: ")
 print(mortQuantile) # this should be the Hazard target frequency
