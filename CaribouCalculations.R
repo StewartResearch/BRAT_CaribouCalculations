@@ -603,19 +603,20 @@ print(out2)
 ###########################
 # Snake- Sahtahneh herd (STUDY AREA 3) ---- 
 ###########################
-# measuring lambda and associated thresholds for the Hazards: Part I ----
 
+###############################################################################
 # Step 1: know (or estimate) some basic information about each study area/herd. 
-### Made up datat - that is roughly reflected of expected rec and sadF on a population that is larger than the other two study areas.
-N = 360 # 
+### For Snake herd: data obtained from the ECCC 2011 scientific report
+N = 360 # population of the Chinchaga herd as of 2008
 SadF = 0.94 # Adult female survival 
 recr = 0.072 # Juvenile recruitment 
 
 # invert these numbers to calculate the mortality values:
-MortSadF = 0.06 # part of this will go into the Initial frequency of the threats
-Mortrecr = 0.928 # part of this will go into the Initial frequency of the threats
+MortSadF = (1 - SadF) # part of this will go into the Initial frequency of the threats
+Mortrecr = (1-recr) # part of this will go into the Initial frequency of the threats
 
 
+################################
 # Step 2: State your assumptions
 ### In this example, there are 4 threats. Three of these threats apply to adult females, and three of these threats apply to juveniles
 ### one threat each, applies to only adult females and juveniles
@@ -638,6 +639,7 @@ mort1stDay <- 1 - surv1stDay
 #mortToSurvey <- 1 - survToSurvey
 
 
+####################################################################################
 # Step 3: first calculate the population growth distribution - non density dependent
 annual <- function(N, SadF, recr) { 
   newN <- N * SadF
@@ -653,7 +655,7 @@ for (yr in 1:Nyears) {
 }
 print(N) # population size at each year, for 100 years.
 
-
+###########################################################################################################
 # Step 4: calculate a normal distribution, and indicate the 40% value
 ### This 40% value comes from Environment and Climate Change Canada's 2012 boreal caribou recovery strategy
 ### indicating the threshold of 35% landscape disturbance = 60% survival probability of herd persistence. 
@@ -671,42 +673,11 @@ mortQuantile <- qnorm(0.4, mean = 1, sd1) # mortality quartile is at the 40% mar
 # Step 4: put this mortQuantile into the Target frequency of the Hazard box
 ### This is the frequency we need to try and aim above, to prevent lambda being consistently below 1, given a population sd of 0.1
 # in this case it is:
-print( (1 - mortQuantile) + 1)
-# 1.02
+print( mortQuantile) 
+# 0.923
 
-# Step 5: then calculate how the existing threats, and barriers to those threats, affect this quartile:
-### Threat 1
-predationAdult <- function(init, avoid, seismic, huntPred, earlySeral, huntCaribou, huntAltPrey) {
-  init * avoid * seismic * huntPred * earlySeral * huntCaribou * huntAltPrey
-}
-
-predationAdultRev <- function(TopEventFreq, avoid, seismic, huntPred, earlySeral, huntCaribou, huntAltPrey) { # calculate the initial frequency of predation given the current frequency and the values of the thresholds
-  TopEventFreq/ (avoid * seismic * huntPred * earlySeral * huntCaribou * huntAltPrey)
-}
-
-### Threat 2
-predationJuv <- function(init, avoid) {
-  init * avoid
-}
-
-predationJuvRev <- function(TopEventFreq, avoid) {
-  TopEventFreq/( avoid )
-}
-
-### Threat 3
-habitatAppropriation <- function(init, setAsides, recoveryRestoration, afforestation) {
-  init * setAsides * recoveryRestoration * afforestation
-}
-
-### Threat 4
-stress <- function(init, managementForFood, dailySelection, stableEpidemiology, resistance, preventHarassment) {
-  init * managementForFood * dailySelection * stableEpidemiology * resistance * preventHarassment
-}
-
-#########################################################################################################################################################
-#########################################################################################################################################################
-# Rational for populating the BRAT framework
-#########################################################################################################################################################
+##################################################################################
+# Step 5:populating the BRAT framework Initial frequency and top events of threats
 
 # Determining what claues should go into the Initial Frequency of a Threat (Blue boxes), and what values should go into the barriers to a threat (White
 # boxes) can be tricky and subjective in the BRAT framework. The values need to come from the best sourced data, and when those data are limited, they
@@ -721,14 +692,14 @@ stress <- function(init, managementForFood, dailySelection, stableEpidemiology, 
 
 # Threat 1 - General predation
 ### Current Top Event Frequency
-Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
+Threat1_InitialFreq <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
 
 ### Initial Frequency
 ##### calculated from the BRAT threat line:
 predationAdultRev <- function(TopEventFreq, avoid, seismic, huntPred, earlySeral, huntCaribou, huntAltPrey) { # calculate the initial frequency of predation given the current frequency and the values of the thresholds
   TopEventFreq/ (avoid * seismic * huntPred * earlySeral * huntCaribou * huntAltPrey)
 }
-Threat1_InitialFreq<- predationAdult(Threat1_topEvent, 2, 1.5, 0.65, 1.1, 1, 0.9)
+# Threat1_topEvent <- predationAdult(Threat1_InitialFreq, 2, 1.5, 0.65, 1.1, 1, 0.9)
 
 
 # Threat 2 - juvenile predation
@@ -760,7 +731,6 @@ Difference_nonpredation = Difference - Difference_predation
 Threat3_multiplier
 Threat4_multiplier
 
-
 # Threat 3: Permanent habitat appropriation
 ### Current Top Event Frequency
 Threat3_topevent = Threat3_multiplier
@@ -769,72 +739,127 @@ Threat3_topevent = Threat3_multiplier
 # multiply it by what values exist in the barrier to back calculte this value
 Threat3_InitialFreq <- Threat3_multiplier*(prod(0.95* 1* 1))
 
-
 # Threat 4: Stresses reducing caribou fitness and health
 ### Current top event frequency
 Threat4_topevent <- Threat4_multiplier
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
-Threat4_InitialFreq <- Threat4_multiplier*(prod(1, 0.8, 1, 1, 1))
-########################################################################################################################################################
+Threat4_InitialFreq <- Threat4_multiplier*(prod(1.5, 0.8, 1.25, 1.25, 1.0))
 
 
-# Step 6: Calculate the Current Total Top Event and Current Consequency (i.e. Mitigate) vlaues
+#######################################################
+# step 6: Convert the inital frequency values to values of lambda:
+Threat1_barriers <- c(1.75, 1.5, 0.65, 1.05, 1, 0.9, 1) # in units of Initial Frequency
+Threat2_barriers <- c(2.19) # in units of Initial Frequency
+Threat3_barriers <- c(0.95, 1, 1) # in units of Initial Frequency
+Threat4_barriers <- c(1.5, 0.8, 1.25, 1.25, 1)  # in units of Initial Frequency
+
+
+Threat_LambdaEffect <- list()
+Threat_LambdaEffect[[1]] <- Threat1_InitialFreq * Threat1_barriers - Threat1_InitialFreq # in Lambda units
+Threat_LambdaEffect[[2]] <- Threat2_InitialFreq * Threat2_barriers - Threat2_InitialFreq # in Lambda units
+Threat_LambdaEffect[[3]] <- Threat3_InitialFreq * Threat3_barriers - Threat3_InitialFreq # in Lambda units
+Threat_LambdaEffect[[4]] <- Threat4_InitialFreq * Threat4_barriers - Threat4_InitialFreq # in Lambda units
+
+wolfCullEffect <- 0.186 # i.e. lambda has the potential to increase by 18.6% during a full wolf cull.
+# Hervieux et al found lambda increased between 4.6 and 14% during a 50% wolf cull. We avereaged these fundings, and standardized by 50% wolf cull to get the 18.6%
+# this assumes a linear relationship
+
+#############################################################################################################################
+# Step 6b
+# we now wanted to stplit this up between the effect of predation by wolves, and the effect of predation as a compensatory effect (or "other)
+# and state it in terms of lmabda units
+Threat_LambdaEffect[[2]]
+#  So, 0.444 is predator effect on calves -- partition into "non-compensated wolf" == "True effect of wolves on calves" 
+#     and "other" e.g., 0.186 is max possible... partition amongst adults and juvs e.g., 0.9 and 0.1 -->
+#     0.9 * 0.186 on calves and 0.1 * 0.186  on adults
+#  "other predation" for adults = 0.08775 - (0.1 * wolfCullEffect) = 0.07375 in Lambda units
+#     i.e. Threat_LambdaEffect[[1]] - (0.1*wolfcullEffect)
+#  "other predation" for adults = 
+wolvesOnAdults <- 0.1 * wolfCullEffect # =  0.0186 in Lambda units
+otherOnAdults <- Threat_LambdaEffect[[1]][1] - wolvesOnAdults # =  0.0692 in Lambda units
+#  "other predation" for calves = 0.444584 - 0.9 * wolfCullEffect = 0.277 in Lambda units
+#     i.e. Threat_Lambda[[2]] - (0.1*wolfcullEffect)
+#  "other predation" for calves = 
+wolvesOnJuvs <- 0.9 * wolfCullEffect # 0.167 in lambda units
+otherOnJuvs <- Threat_LambdaEffect[[2]][1] - wolvesOnJuvs # = 0.277 in Lambda units
+
+
+#   In InitialEvent units --> (0.06915 + Threat1_InitialFreq) / Threat1_InitialFreq
+a <- (otherOnAdults + Threat1_InitialFreq[1]) / Threat1_InitialFreq[1]
+#   In InitialEvent units --> (0.277 + Threat2_InitialFreq) / Threat2_InitialFreq
+b <- (otherOnJuvs + Threat2_InitialFreq[1]) / Threat2_InitialFreq[1]
+#   Wolf part In InitialEvent units --> ((0.0186 - 0.07375) + Threat1_InitialFreq) / Threat1_InitialFreq
+d <- ((wolvesOnAdults) + Threat1_InitialFreq[1]) / Threat1_InitialFreq[1]
+#   Wolf part In InitialEvent units --> ((0.444584 - 0.3185) + Threat2_InitialFreq) / Threat2_InitialFreq
+# Wolf part In InitialEvent units --> 
+f <- ((wolvesOnJuvs) + Threat2_InitialFreq) / Threat2_InitialFreq
+
+# check to see if this matches the value of inital units of the barrier for threat 1, barrier 1:
+wolfCullEffect * 0.1 # for adults
+(a - 1)  + (d - 1)  + 1 # in initial units
+# should equal:
+Threat1_barriers[[1]] # :)
+# also, lambda values should equal
+#Threat1_LambdaEffect = wolvesOnAdults + otherOnAdults # check
+#Threat2_LambdaEffect = wolvesOnAdults + otherOnJuvs # check
+
+########################
+# Step 7: Calculate the Current Total Top Event and Current Consequency (i.e. Mitigate) vlaues
 # these values can be changed to better reflect data as it becomes available:
 ### the first number of each function is the probability that the threat affects the citical event (lambda below zero)
 ### the subsequent numbers of each function are the probability that the barrers will FAIL to prevent the threat
 
 # Top Event Frequency Function
 # calculate the top event frequency, before mitigation actions take place.
-topEvent <- function(...) {
+topEventCalculator <- function(...) {
   sum(unlist(list(...)))
 }
 
 # Consequency Frequency Function
 # Calculate lambda after mitigation actions take place
-mitigate <- function(cull, dd, pens){
-  cull * dd * pens
+mitigate <- function(cull, pens, rs){
+  cull * pens* rs
 }
 
 
-topEvent <- topEvent(predationAdult(Threat1_InitialFreq, 2, 1.5, 0.65, 2, 1, 0.9), # climate change scenario
-                     predationJuv(Threat2_InitialFreq, 2.19), 
-                     habitatAppropriation(Threat3_InitialFreq, 0.95, 2, 1), 
-                     stress(Threat4_InitialFreq, 2, 2, 2, 1, 1))
+Threat1_barriers <- c(1.75, 1.5, 0.65, 1.05, 1, 0.9, 1) # in units of Initial Frequency
+Threat2_barriers <- c(2.19) # in units of Initial Frequency
+Threat3_barriers <- c(0.95, 1, 1) # in units of Initial Frequency
+Threat4_barriers <- c(1.5, 0.8, 1.25, 1.25, 1)  # in units of Initial Frequency
+
+
+(topEvent <- topEventCalculator(threatCalculator(Threat1_InitialFreq, Threat1_barriers), # climate change scenario
+                                threatCalculator(Threat2_InitialFreq, Threat2_barriers), 
+                                threatCalculator(Threat3_InitialFreq, Threat3_barriers), 
+                                threatCalculator(Threat4_InitialFreq, Threat4_barriers)))
+message("This is the top event lambda: ", round(1 + (1 - topEvent), 3)) # this should be around 0.93 (ECCC 2008), but slightly lower as we know that
+# Chinchaga herd is declining (ie, below our threshold of 0.93 for 40% probability of stability)
 ###
 
 postMitigate <- function(topEvent, mitigate) {
   topEvent * mitigate
 }
 
-#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 1)) # this is the maternity pen lever - acting solo
-#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is the maternity pen lever - acting solo
-#postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 1)) # this is wolf cull lever - acting solo.
-#postMitigate <- postMitigate(topEvent, mitigate(0.5, 1, 0.95)) # combined mitigation/normal scenario
-postMitigate <- postMitigate(topEvent, mitigate(1, 1, 1)) # Climate change scenario
+postMitigate <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.95)) # combined mitigation/normal scenario
 
+#######################
+# Step 6 b: look at different management scenarios by changing the alternate value to equal 1 (i.e. no effect)
+# un comment below lines to look at these strategies, and how the postmitigate value changes
 
+#postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
+#postMitigate <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
+#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
+## then run the below code for the final lambda values of these situations.
+
+#################################################################
 # Step 7: look at the hazard and consequence values, and compare
 message("Lambdas: ")
-print( (1 - mortQuantile) + 1) # this should be the Hazard target frequency
+print(mortQuantile) # this should be the Hazard target frequency
 print( (1 - topEvent) + 1) # this should be the hazard current total top event frequency
 print( (1 - postMitigate) + 1) # this is the current consequence frequency
 
-#message("Lambdas: ")
-#print(mortQuantile)  # this should be the Hazard target frequency
-#topEventN <- ((1 - topEvent) 
-#print(topEventN)  # this should be the hazard current total top event frequency
-#postMitigateN <- (1 - postMitigate)
-#print(postMitigateN) # this is the current consequence frequency
-
-
-# Print associated lopa crit messages by comparing these values:
-out1 <- ifelse(topEvent >= mortQuantile, "Red - caribou population growthrate is persistently below 1", "Green - caribou population growthrate is above 1")
-out2 <- ifelse(postMitigate >= mortQuantile, "Red - caribou extirpated", "Green - caribou recovered")
-print(out1)
-print(out2)
-# Your solution!
 
 
 
