@@ -28,8 +28,8 @@ SadF = 0.87 # Adult female survival
 recr = 0.13 # Juvenile recruitment 
 
 # invert these numbers to calculate the mortality values:
-MortSadF = 0.13 # part of this will go into the Initial frequency of the threats
-Mortrecr = 0.87 # part of this will go into the Initial frequency of the threats
+MortSadF = 1-SadF # part of this will go into the Initial frequency of the threats
+Mortrecr = 1-recr # part of this will go into the Initial frequency of the threats
 
 
 ################################
@@ -42,9 +42,9 @@ Mortrecr = 0.87 # part of this will go into the Initial frequency of the threats
 ##### The literature says that most of the mortality is due to predation. 
 #####
 
-Threat1_multiplier = MortSadF*0.90 # I'm assuming that 90% of the variation in SadF is due to predation. This can be changed.
-Threat2_multiplier = Mortrecr*0.95 # 5% of random juvenile deaths are due to factors other than predation (calculated below based on maternity pen literature and pers coms)
-Threat3_multiplier = MortSadF*0.05 + 0.025 # we split the remaining 10% of the variation in SadF between the final two threats. We also split the remaining 5% of rec between the final two threats.
+Threat1_multiplier = MortSadF*0.70 # I'm assuming that 90% of the variation in SadF is due to predation. This can be changed.
+Threat2_multiplier = Mortrecr*0.975 # <5% of random juvenile deaths are due to factors other than predation (calculated below based on maternity pen literature and pers coms)
+Threat3_multiplier = MortSadF*0.15 + 0.0125 # we split the remaining 20% of the variation in SadF between the final two threats. We also split the remaining 5% of rec between the final two threats.
 Threat4_multiplier = Threat3_multiplier
 
 # assumptions about caribou population demongraphics, from pblished literaure, reports, and pers. comms.
@@ -153,7 +153,7 @@ Threat3_topevent = Threat3_multiplier
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
-Threat3_InitialFreq <- Threat3_multiplier*(prod(0.95* 1* 1))
+Threat3_InitialFreq <- Threat3_multiplier*(prod(0.975* 1* 1))
 
 # Threat 4: Stresses reducing caribou fitness and health
 ### Current top event frequency
@@ -161,16 +161,17 @@ Threat4_topevent <- Threat4_multiplier
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
-Threat4_InitialFreq <- Threat4_multiplier*(prod(1.25, 0.8, 1.0, 1.0, 1))
+Threat4_InitialFreq <- Threat4_multiplier*(prod(0.975, 0.975, 1.0, 1.0, 1))
 
 
 #######################################################
 # step 6: Convert the inital frequency values to values of lambda:
-Threat1_barriers <- c(1.75, 1.5, 0.65, 1.05, 1, 0.9, 1) # in units of Initial Frequency
-Threat2_barriers <- c(2.19) # in units of Initial Frequency
-Threat3_barriers <- c(0.95, 1, 1) # in units of Initial Frequency
-Threat4_barriers <- c(1.25, 0.8, 1.0, 1.0, 1)  # in units of Initial Frequency
 
+
+Threat1_barriers <- c(2.0, 1.6, 0.65, 1.5, 1.5, 1.5, 1.1) # in units of Initial Frequency
+Threat2_barriers <- c(2.19) # in units of Initial Frequency
+Threat3_barriers <- c(0.975, 1, 1) # in units of Initial Frequency
+Threat4_barriers <- c(0.975, 0.975, 1.0, 1.0, 1) 
 
 Threat_LambdaEffect <- list()
 Threat_LambdaEffect[[1]] <- Threat1_InitialFreq * Threat1_barriers - Threat1_InitialFreq # in Lambda units
@@ -240,10 +241,11 @@ mitigate <- function(cull, pens, rs){
 }
 
 
-Threat1_barriers <- c(1.75, 1.5, 0.65, 1.05, 1, 0.9, 1) # in units of Initial Frequency
+
+Threat1_barriers <- c(2.0, 1.6, 0.65, 1.5, 1.5, 1.5, 1.1) # in units of Initial Frequency
 Threat2_barriers <- c(2.19) # in units of Initial Frequency
-Threat3_barriers <- c(0.95, 1, 1) # in units of Initial Frequency
-Threat4_barriers <- c(1.25, 0.8, 1.0, 1.0, 1)  # in units of Initial Frequency
+Threat3_barriers <- c(0.975, 1, 1) # in units of Initial Frequency
+Threat4_barriers <- c(0.975, 0.975, 1.0, 1.0, 1) 
 # make sure these are the same as above...
 
 (topEvent <- topEventCalculator(threatCalculator(Threat1_InitialFreq, Threat1_barriers), # climate change scenario
@@ -266,7 +268,7 @@ postMitigate <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.95)) # combined 
 
 #postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
 # postMitigate <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
-postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
+#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
 ## then run the below code for the final lambda values of these situations.
 
 #################################################################
@@ -311,9 +313,9 @@ Mortrecr = 1-recr # part of this will go into the Initial frequency of the threa
 ##### The literature says that most of the mortality is due to predation. 
 #####
 
-Threat1_multiplier = MortSadF*0.90 # I'm assuming that 90% of the variation in SadF is due to predation. This can be changed.
-Threat2_multiplier = Mortrecr*0.95 # 5% of random juvenile deaths are due to factors other than predation (calculated below based on maternity pen literature and pers coms)
-Threat3_multiplier = MortSadF*0.05 + 0.025 # we split the remaining 10% of the variation in SadF between the final two threats. We also split the remaining 5% of rec between the final two threats.
+Threat1_multiplier = MortSadF*0.80 # I'm assuming that 90% of the variation in SadF is due to predation. This can be changed.
+Threat2_multiplier = Mortrecr*0.975 # 5% of random juvenile deaths are due to factors other than predation (calculated below based on maternity pen literature and pers coms)
+Threat3_multiplier = MortSadF*0.10 + 0.0125 # we split the remaining 10% of the variation in SadF between the final two threats. We also split the remaining 5% of rec between the final two threats.
 Threat4_multiplier = Threat3_multiplier
 
 # assumptions about caribou population demongraphics, from pblished literaure, reports, and pers. comms.
@@ -574,9 +576,9 @@ Mortrecr = (1-recr) # part of this will go into the Initial frequency of the thr
 ##### The literature says that most of the mortality is due to predation. 
 #####
 
-Threat1_multiplier = MortSadF*0.90 # I'm assuming that 90% of the variation in SadF is due to predation. This can be changed.
-Threat2_multiplier = Mortrecr*0.95 # 5% of random juvenile deaths are due to factors other than predation (calculated below based on maternity pen literature and pers coms)
-Threat3_multiplier = MortSadF*0.05 + 0.025 # we split the remaining 10% of the variation in SadF between the final two threats. We also split the remaining 5% of rec between the final two threats.
+Threat1_multiplier = MortSadF*0.70 # I'm assuming that 90% of the variation in SadF is due to predation. This can be changed.
+Threat2_multiplier = Mortrecr*0.975 # <5% of random juvenile deaths are due to factors other than predation (calculated below based on maternity pen literature and pers coms)
+Threat3_multiplier = MortSadF*0.15 + 0.0125 # we split the remaining 20% of the variation in SadF between the final two threats. We also split the remaining 5% of rec between the final two threats.
 Threat4_multiplier = Threat3_multiplier
 
 # assumptions about caribou population demongraphics, from pblished literaure, reports, and pers. comms.
@@ -647,7 +649,7 @@ Threat1_InitialFreq <- Threat1_multiplier # proportion of caribou mortality rate
 predationAdultRev <- function(TopEventFreq, avoid, seismic, huntPred, earlySeral, huntCaribou, huntAltPrey) { # calculate the initial frequency of predation given the current frequency and the values of the thresholds
   TopEventFreq/ (avoid * seismic * huntPred * earlySeral * huntCaribou * huntAltPrey)
 }
-#Threat1_topEvent <- predationAdult(Threat1_InitialFreq, 2, 1.5, 0.65, 1.1, 1, 0.9)
+
 
 
 # Threat 2 - juvenile predation
@@ -685,7 +687,7 @@ Threat3_topevent = Threat3_multiplier
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
-Threat3_InitialFreq <- Threat3_multiplier*(prod(0.95* 1* 1))
+Threat3_InitialFreq <- Threat3_multiplier*(prod(0.975* 1* 1))
 
 # Threat 4: Stresses reducing caribou fitness and health
 ### Current top event frequency
@@ -693,15 +695,16 @@ Threat4_topevent <- Threat4_multiplier
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
-Threat4_InitialFreq <- Threat4_multiplier*(prod(1.25, 0.8, 1.0, 1.0, 1))
+Threat4_InitialFreq <- Threat4_multiplier*(prod(0.975, 0.975, 1.0, 1.0, 1))
 
 
 #######################################################
 # step 6: Convert the inital frequency values to values of lambda:
-Threat1_barriers <- c(1.75, 1.5, 0.65, 1.05, 1, 0.9, 1) # in units of Initial Frequency
+
+Threat1_barriers <- c(2.0, 1.6, 0.65, 1.5, 1.5, 1.5, 1.1) # in units of Initial Frequency
 Threat2_barriers <- c(2.19) # in units of Initial Frequency
-Threat3_barriers <- c(0.95, 1, 1) # in units of Initial Frequency
-Threat4_barriers <- c(1.25, 0.8, 1.0, 1.0, 1)  # in units of Initial Frequency
+Threat3_barriers <- c(0.975, 1, 1) # in units of Initial Frequency
+Threat4_barriers <- c(0.975, 0.975, 1.0, 1.0, 1) 
 
 
 Threat_LambdaEffect <- list()
@@ -772,18 +775,20 @@ mitigate <- function(cull, pens, rs){
 }
 
 
-Threat1_barriers <- c(1.75, 1.5, 0.65, 1.05, 1, 0.9, 1) # in units of Initial Frequency
+
+
+Threat1_barriers <- c(2.0, 1.6, 0.65, 1.5, 1.5, 1.5, 1.1) # in units of Initial Frequency
 Threat2_barriers <- c(2.19) # in units of Initial Frequency
-Threat3_barriers <- c(0.95, 1, 1) # in units of Initial Frequency
-Threat4_barriers <- c(1.25, 0.8, 1.0, 1.0, 1)  # in units of Initial Frequency
+Threat3_barriers <- c(0.975, 1, 1) # in units of Initial Frequency
+Threat4_barriers <- c(0.975, 0.975, 1.0, 1.0, 1) 
 # make sure these are the same as above...
 
 (topEvent <- topEventCalculator(threatCalculator(Threat1_InitialFreq, Threat1_barriers), # climate change scenario
                                 threatCalculator(Threat2_InitialFreq, Threat2_barriers), 
                                 threatCalculator(Threat3_InitialFreq, Threat3_barriers), 
                                 threatCalculator(Threat4_InitialFreq, Threat4_barriers)))
-message("This is the top event lambda: ", round(1 + (1 - topEvent), 3)) # this should be around 0.93 (ECCC 2008), but slightly lower as we know that
-# Chinchaga herd is declining (ie, below our threshold of 0.93 for 40% probability of stability)
+message("This is the top event lambda: ", round(1 + (1 - topEvent), 3)) # this should be around 0.9 (ECCC 2008), but slightly lower as we know that
+# Snake herd is declining (ie, below our threshold of 0.93 for 40% probability of stability)
 ###
 
 postMitigate <- function(topEvent, mitigate) {
@@ -796,9 +801,9 @@ postMitigate <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.95)) # combined 
 # Step 6 b: look at different management scenarios by changing the alternate value to equal 1 (i.e. no effect)
 # un comment below lines to look at these strategies, and how the postmitigate value changes
 
-#postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
-# postMitigate <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
-postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
+postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
+#postMitigate <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
+#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
 ## then run the below code for the final lambda values of these situations.
 
 #################################################################
