@@ -13,7 +13,7 @@
 ####### But this 40% is obtained from a normal distribution - i.e. it is the area under a normalized curve (bc the models in ECCC2012 assume a normal distribution)
 ####### representing the lower 40% of the distribution.
 
-# See Calculations_global.R for everything being developped prior to this stage.
+# See Calculations_global.R and CaribouCalculations.R for everything being developped prior to this stage.
 
 ###########################
 ###########################
