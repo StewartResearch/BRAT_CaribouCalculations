@@ -912,15 +912,16 @@ print( mortQuantile)
 
 # Threat 1 - General predation
 ### Current Top Event Frequency
-Threat1_InitialFreq <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
+Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
+Threat1_InitialFreq <- Threat1_topEvent/prod(2.0, 1.6, 0.65, 1.5, 1.0, 0.9, 1.0)
 
-### Initial Frequency
-##### calculated from the BRAT threat line:
-predationAdultRev <- function(TopEventFreq, avoid, seismic, huntPred, earlySeral, huntCaribou, huntAltPrey) { # calculate the initial frequency of predation given the current frequency and the values of the thresholds
-  TopEventFreq/ (avoid * seismic * huntPred * earlySeral * huntCaribou * huntAltPrey)
-}
-
-
+# ### Initial Frequency
+# ##### calculated from the BRAT threat line:
+# predationAdultRev <- function(TopEventFreq, avoid, seismic, huntPred, earlySeral, huntCaribou, huntAltPrey) { # calculate the initial frequency of predation given the current frequency and the values of the thresholds
+#   TopEventFreq/ (avoid * seismic * huntPred * earlySeral * huntCaribou * huntAltPrey)
+# }
+# 
+# 
 
 # Threat 2 - juvenile predation
 ### Initial Frequency
@@ -957,7 +958,9 @@ Threat3_topevent = Threat3_multiplier
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
-Threat3_InitialFreq <- Threat3_multiplier*(prod(0.95* 1* 1))
+# Threat3_InitialFreq <- Threat3_multiplier*(prod(0.95* 1* 1))
+Threat3_InitialFreq <- Threat3_topevent/(prod(1.05* 1* 1))
+
 
 # Threat 4: Stresses reducing caribou fitness and health
 ### Current top event frequency
@@ -965,16 +968,16 @@ Threat4_topevent <- Threat4_multiplier
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
-Threat4_InitialFreq <- Threat4_multiplier*(prod(0.95, 0.950, 0.95, 1.00, 1.00))
-
+# Threat4_InitialFreq <- Threat4_multiplier*(prod(0.95, 0.950, 0.95, 1.00, 1.00))
+Threat4_InitialFreq <- Threat4_topevent/(prod(105, 1.05, 1.05, 1.00, 1.00))
 
 #######################################################
 # step 6: Convert the inital frequency values to values of lambda:
 
 Threat1_barriers <- c(2.0, 1.6, 0.65, 1.5, 1.0, 0.9, 1.0) # in units of Initial Frequency
 Threat2_barriers <- c(2.19) # in units of Initial Frequency
-Threat3_barriers <- c(0.95, 1, 1) # in units of Initial Frequency
-Threat4_barriers <- c(0.95, 0.950, 0.95, 1.00, 1.00)
+Threat3_barriers <- c(1.05, 1, 1) # in units of Initial Frequency
+Threat4_barriers <- c(105, 1.05, 1.05, 1.00, 1.00)
 
 Threat_LambdaEffect <- list()
 Threat_LambdaEffect[[1]] <- Threat1_InitialFreq * Threat1_barriers - Threat1_InitialFreq # in Lambda units
@@ -1046,19 +1049,19 @@ mitigate <- function(cull, pens, rs){
 
 Threat1_barriers <- c(2.0, 1.6, 0.65, 1.5, 1.0, 0.9, 1.0) # in units of Initial Frequency
 Threat2_barriers <- c(2.19) # in units of Initial Frequency
-Threat3_barriers <- c(0.95, 1, 1) # in units of Initial Frequency
-Threat4_barriers <- c(0.95, 0.950, 0.95, 1.00, 1.00)
+Threat3_barriers <- c(1.05, 1, 1) # in units of Initial Frequency
+Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.00)
 
 
 #######################################################
-# step 6: Convert the inital frequency valu
+# step 6: Convert the inital frequency value
 # make sure these are the same as above...
 
-(topEvent <- topEventCalculator(threatCalculator(Threat1_InitialFreq, Threat1_barriers), # climate change scenario
+(topEvent <- topEventCalculator(threatCalculator(Threat1_InitialFreq, Threat1_barriers),
                                 threatCalculator(Threat2_InitialFreq, Threat2_barriers), 
                                 threatCalculator(Threat3_InitialFreq, Threat3_barriers), 
                                 threatCalculator(Threat4_InitialFreq, Threat4_barriers)))
-message("This is the top event lambda: ", round(1 + (1 - topEvent), 3)) # this should be around 0.9 (ECCC 2008), but slightly lower as we know that
+message("This is the top event lambda: ", round((1 - topEvent) + 1, 3)) # this should be around 0.9 (ECCC 2008), but slightly lower as we know that
 # The average herd is below the 40% lambda threshold
 ###
 
