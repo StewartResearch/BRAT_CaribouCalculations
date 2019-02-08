@@ -8,6 +8,8 @@ Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.00)
 ### average demographic values between snake and Chinchaga as of 2008 - from downloadable csv online:
 # source: https://open.canada.ca/data/en/dataset/4eb3e825-5b0f-45a3-8b8b-355188d24b71
 
+# Chinchaga
+
 # Step 1: know (or estimate) some basic information about each study area/herd. 
 ### For Chinchaga: data obtained from the ECCC 2011 scientific report
 N = 250 # population of the Chinchaga herd as of 2008
@@ -67,7 +69,8 @@ for (yr in 1:Nyears) {
 ### This 40% value comes from Environment and Climate Change Canada's 2012 boreal caribou recovery strategy
 ### indicating the threshold of 35% landscape disturbance = 60% survival probability of herd persistence. 
 ### In other words, we are OK with 40% of the herds dissapearing, on average.
-lambdaQuartile <- qnorm(0.6, mean = 1, sd1) # mortality quartile is at the 40% mark of this distribution. 
+lambdaQuartile <- qnorm(0.6, mean = 1, sd1) # mortality quartile is at the 60% mark of this distribution. 
+# in other words, what lambda vlaue do herds need to accomplish to obtain sustainability according to ECCC's 2012 40% threshold.
 
 if (FALSE) { # not used here
   sumMort <- function(SadF, recr) { 
@@ -99,7 +102,8 @@ print(lambdaQuartile)
 
 # Threat 1 - General predation
 ### Current Top Event Frequency
-Threat1_InitialFreq <- 0.05549
+Threat1_InitialFreq <- 0.05549 # see Eliot's calculations on paper on how we got this. Assumes the effectiveness
+                              # of wolf culls extends from juveniles to adults euqally # ASSUMPTION
 Threat1_barrier_1 <-  Threat1_multiplier / (Threat1_InitialFreq * prod(unlist(Threat1_barriers[-1])))
 Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
 Threat1_InitialFreq <- Threat1_topEvent/prod(sapply(Threat1_barriers, eval))
@@ -260,13 +264,22 @@ mitigate <- function(cull, pens, rs){
 message("This is the top event lambda: ", round(((1 - topEvent) + 1), 3)) # the topEvent should be around 0.9 (ECCC 2008), but slightly lower as we know that
 # The average herd is below the 40% lambda threshold
 
-# Eliot: I dont think the above top event lambda calculation is correct.
-# the top event is currently around 0.99, but the lambda calculation seems off (1.002), and dosent change despite what I do to the barriers
-# Two possibilities:
-## I feel like this top event frequency calculation needs to be a fraction
-## OR, there is something off with our calculation of the current top event frequencies for each threat.
-
-# Instead, try:
+# does the top event exceed the lambda quartile?
 print(TopEvent_lambda <- lambdaQuartile < 1 + (1-topEvent))
-# still not quite right
-###
+
+# what about after mitigation?
+postMitigate <- function(topEvent, mitigate) {
+  topEvent * mitigate
+}
+
+postMitigate <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.95)) # combined mitigation/normal scenario
+print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigate))
+
+#######################
+# Step 6 b: look at different management scenarios by changing the alternate value to equal 1 (i.e. no effect)
+# un comment below lines to look at these strategies, and how the postmitigate value changes
+
+#postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
+postMitigate <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
+#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
+## then run the below code for the final lambda values of these situations.
