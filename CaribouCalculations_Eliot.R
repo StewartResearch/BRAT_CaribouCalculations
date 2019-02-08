@@ -1,8 +1,7 @@
-###########################
-###########################
-# Average Study area herd ---- 
-# Take the average between Chinchaga and Snake for a demographic value
-###########################
+Threat1_barriers <- c(quote(Threat1_barrier_1), 1.40, 0.65, 1.5, 1.0, 0.9, 1.0) # in units of Initial Frequency
+Threat2_barriers <- quote(c(Threat2_barrier_1)) # in units of Initial Frequency # This is derived from data below
+Threat3_barriers <- c(1.05, 1, 1) # in units of Initial Frequency
+Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.00)
 
 ###############################################################################
 # Step 1: know (or estimate) some basic information about each study area/herd. 
@@ -14,11 +13,15 @@
 N = 250 # population of the Chinchaga herd as of 2008
 SadF = 0.87 # Adult female survival 
 recr = 0.13 # Juvenile recruitment 
+sd1 <- 0.1 # ASSUMPTION # this value can go as high as 0.3, from the literature.
 
 # invert these numbers to calculate the mortality values:
 MortSadF = (1 - SadF) # part of this will go into the Initial frequency of the threats
-Mortrecr = (1-recr) # part of this will go into the Initial frequency of the threats, only 1/2 the animals are female
+Mortrecr = (1 - recr) # part of this will go into the Initial frequency of the threats, only 1/2 the animals are female
 
+
+#########
+# Set the barriers here -- this would be the numbers that go into the BRAT figure
 
 ################################
 # Step 2: State your assumptions
@@ -30,15 +33,15 @@ Mortrecr = (1-recr) # part of this will go into the Initial frequency of the thr
 ##### The literature says that most of the mortality is due to predation. 
 #####
 
-Threat1_multiplier = MortSadF*0.90 # I'm assuming that 90% of the variation in SadF is due to predation. This can be changed.
-Threat2_multiplier = Mortrecr*0.95 # 5% of random juvenile deaths are due to factors other than predation (calculated below based on maternity pen literature and pers coms)
-Threat3_multiplier = MortSadF*0.05 + 0.025 # we split the remaining 10% of the variation in SadF between the final two threats. We also split the remaining 5% of rec between the final two threats.
-Threat4_multiplier = Threat3_multiplier
+Threat1_multiplier = MortSadF * 0.90 # ASSUMPTION # I'm assuming that 90% of the variation in SadF is due to predation. This can be changed.
+Threat2_multiplier = Mortrecr * 0.95 # ASSUMPTION # 5% of random juvenile deaths are due to factors other than predation (calculated below based on maternity pen literature and pers coms)
+Threat3_multiplier = MortSadF * 0.05 + Mortrecr * 0.025 # ASSUMPTION # we split the remaining 10% of the variation in SadF between the final two threats. We also split the remaining 5% of rec between the final two threats.
+Threat4_multiplier = Threat3_multiplier # ASSUMPTION
 
 # assumptions about caribou population demongraphics, from pblished literaure, reports, and pers. comms.
-pregR <- 0.9 # pregnancy rate - from observations in maternal pens (Scott McNay pers com)
-surv1stDay <- 0.8 # juvenile survival to the first day - from maternal pen observations (Scott McNay pers com)
-mort1stDay <- 1 - surv1stDay 
+pregR <- 0.9 # DATA # ASSUMPTION # pregnancy rate - from observations in maternal pens (Scott McNay pers com)
+surv1stDay <- 0.8 # DATA # ASSUMPTION # juvenile survival to the first day - from maternal pen observations (Scott McNay pers com)
+mort1stDay <- 1 - surv1stDay # DATA # ASSUMPTION
 #survToSurvey <- recr / prod(SadF, pregR, surv1stDay) 
 #mortToSurvey <- 1 - survToSurvey
 
@@ -57,27 +60,27 @@ N[1] <- 305
 for (yr in 1:Nyears) {
   N[yr + 1] <- annual(N[yr], SadF, recr)
 }
-print(N) # population size at each year, for 100 years.
+# print(N) # population size at each year, for 100 years.
 
 ###########################################################################################################
 # Step 4: calculate a normal distribution, and indicate the 40% value
 ### This 40% value comes from Environment and Climate Change Canada's 2012 boreal caribou recovery strategy
 ### indicating the threshold of 35% landscape disturbance = 60% survival probability of herd persistence. 
 ### In other words, we are OK with 40% of the herds dissapearing, on average.
+lambdaQuartile <- qnorm(0.6, mean = 1, sd1) # mortality quartile is at the 40% mark of this distribution. 
 
-sumMort <- function(SadF, recr) { 
-  1 - SadF + (1 - (recr / 2)) # only 1/2 he calves are female, and will contribute to the next population!
+if (FALSE) { # not used here
+  sumMort <- function(SadF, recr) { 
+    1 - SadF + (1 - (recr / 2)) # only 1/2 he calves are female, and will contribute to the next population!
+  }
+  b <- rnorm(1e5, 1, sd1) # make a normal distribution, with a sd of sd1
 }
 
-sd1 <- 0.1 # this value can go as high as 0.3, from the literature.
-b <- rnorm(1e5, 1, sd1) # make a normal distribution, with a sd of sd1
-mortQuantile <- qnorm(0.4, mean = 1, sd1) # mortality quartile is at the 40% mark of this distribution. 
 
-
-# Step 4: put this mortQuantile into the Target frequency of the Hazard box
+# Step 4: put this lambdaQuartile into the Target frequency of the Hazard box
 ### This is the frequency we need to try and aim above, to prevent lambda being consistently below 1, given a population sd of 0.1
 # in this case it is:
-print(mortQuantile) 
+print(lambdaQuartile) 
 # 0.974
 
 ##################################################################################
@@ -96,8 +99,10 @@ print(mortQuantile)
 
 # Threat 1 - General predation
 ### Current Top Event Frequency
+Threat1_InitialFreq <- 0.05549
+Threat1_barrier_1 <-  Threat1_multiplier / (Threat1_InitialFreq * prod(unlist(Threat1_barriers[-1])))
 Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
-Threat1_InitialFreq <- Threat1_topEvent/prod(1.5, 1.40, 0.65, 1.5, 1.0, 0.9, 1.0)
+Threat1_InitialFreq <- Threat1_topEvent/prod(sapply(Threat1_barriers, eval))
 
 # ### Initial Frequency
 # ##### calculated from the BRAT threat line:
@@ -111,65 +116,62 @@ Threat1_InitialFreq <- Threat1_topEvent/prod(1.5, 1.40, 0.65, 1.5, 1.0, 0.9, 1.0
 ### Initial Frequency
 ##### (i.e. rather all else being equal, how many cows produce a calf a year later if predation is not a factor)
 # Initial frequency = Pregnancy Rate*Adult female survival*Calf survival to Day 30
-Threat2_InitialSurv<- pregR*SadF*surv1stDay # proportion of females that produce a calf
-Threat2_InitialFreq<- (1 - (Threat2_InitialSurv)) # proportion of females that loose a calf
+Threat2_InitialSurv <- pregR * SadF * surv1stDay # proportion of females that produce a calf
+Threat2_InitialFreq <- (1 - (Threat2_InitialSurv)) # proportion of females at the start of a year that result in no calf a year later
 
 ### Current Top Event Frequency
-##### Difference between the calculated Initial Frequency, and the ECCC reported value (i.e. how many calf deaths from day 1 to a population survey are unaccounted for?)
-Difference = Mortrecr - Threat2_InitialFreq 
-# We know from maternal penning data that even between day 2 and day 30, only 90% of calves survive (i.e. even without predation, 90% of calves survive, and 10% die from "other causes; McNay work)
+##### Difference between the calculated Initial Frequency, and the ECCC reported value (i.e. how 
+#  many calf deaths from day 1 to a population survey are unaccounted for?)
+PropMortDay30ToSurvey = Mortrecr - Threat2_InitialFreq 
+# We know from maternal penning data that even between day 2 and day 30, 90% of calves survive 
+#   (i.e. even without predation, 90% of calves survive, and 10% die from "other causes; McNay work)
 ## Assume this rate remains consistent from day 2 to a population survey - MIGHT BE A BIG ASSUMPTION!
-Difference_predation = Difference*0.9 
+PropMortDay30ToSurvey_predation <- PropMortDay30ToSurvey * 0.9 # DATA # ASSUMPTION #
 # Mortality due to predation, plus mortality due to other causes will be the Current Top Event Frequency:
-Threat2_topevent <- Difference_predation + Threat2_InitialFreq
+Threat2_topevent <- PropMortDay30ToSurvey_predation + Threat2_InitialFreq
 
 ### Barrier value: Effect of predator avoidance
 ##### Because this is the only barrier to the threat of predation that we have identified, we can now easily calculate this number
-Threat2_barrier <- Threat2_topevent/Threat2_InitialFreq
+Threat2_barriers <- Threat2_topevent / Threat2_InitialFreq
+Threat2_barrier_1 <- Threat2_barriers[1]
+# This is 2.19
 
 
 # Needed for the rest of the framework:
 ### From above, we can calculate the proportion of juvenile mortalities that are NOT due to predation
-Difference_nonpredation = Difference - Difference_predation
+Difference_nonpredation = PropMortDay30ToSurvey - PropMortDay30ToSurvey_predation
 ### Therefore, we need to add the multiplier of 1/2 this rate to the final two Threats, to account for the proportion directly attributable to juveniles
 ### Remember at the start of this script I already specified Threat multipliers. You can change them there if needed.
-Threat3_multiplier
-Threat4_multiplier
 
 # Threat 3: Permanent habitat appropriation
 ### Current Top Event Frequency
-Threat3_topevent = Threat3_multiplier
+Threat3_topevent = Threat3_multiplier + 0.5 * Difference_nonpredation # DATA # ASSUMPTION
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
 # Threat3_InitialFreq <- Threat3_multiplier*(prod(0.95* 1* 1))
-Threat3_InitialFreq <- Threat3_topevent/(prod(1.05* 1* 1))
+Threat3_InitialFreq <- Threat3_topevent/(prod(Threat3_barriers))
 
 
 # Threat 4: Stresses reducing caribou fitness and health
 ### Current top event frequency
-Threat4_topevent <- Threat4_multiplier
+Threat4_topevent <- Threat4_multiplier + 0.5 * Difference_nonpredation # DATA # ASSUMPTION 
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
 # Threat4_InitialFreq <- Threat4_multiplier*(prod(0.95, 0.950, 0.95, 1.00, 1.00))
-Threat4_InitialFreq <- Threat4_topevent/(prod(1.05, 1.05, 1.05, 1.00, 1.00))
+Threat4_InitialFreq <- Threat4_topevent/(prod(Threat4_barriers))
 
 #######################################################
 # step 6: Convert the inital frequency values to values of lambda:
 
-Threat1_barriers <- c(1.5, 1.40, 0.65, 1.5, 1.0, 0.9, 1.0) # in units of Initial Frequency
-Threat2_barriers <- c(2.19) # in units of Initial Frequency
-Threat3_barriers <- c(1.05, 1, 1) # in units of Initial Frequency
-Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.00)
-
 Threat_LambdaEffect <- list()
-Threat_LambdaEffect[[1]] <- Threat1_InitialFreq * Threat1_barriers - Threat1_InitialFreq # in Lambda units
+Threat_LambdaEffect[[1]] <- Threat1_InitialFreq * sapply(Threat1_barriers, eval) - Threat1_InitialFreq # in Lambda units
 Threat_LambdaEffect[[2]] <- Threat2_InitialFreq * Threat2_barriers - Threat2_InitialFreq # in Lambda units
 Threat_LambdaEffect[[3]] <- Threat3_InitialFreq * Threat3_barriers - Threat3_InitialFreq # in Lambda units
 Threat_LambdaEffect[[4]] <- Threat4_InitialFreq * Threat4_barriers - Threat4_InitialFreq # in Lambda units
 
-wolfCullEffect <- 0.186 # i.e. lambda has the potential to increase by 18.6% during a full wolf cull.
+wolfCullEffect <- 0.186 # DATA # ASSUMPTION # i.e. lambda has the potential to increase by 18.6% during a full wolf cull.
 # Hervieux et al found lambda increased between 4.6 and 14% during a 50% wolf cull. We avereaged these fundings, and standardized by 50% wolf cull to get the 18.6%
 # this assumes a linear relationship
 
@@ -184,14 +186,30 @@ Threat_LambdaEffect[[2]]
 #  "other predation" for adults = 0.08775 - (0.1 * wolfCullEffect) = 0.07375 in Lambda units
 #     i.e. Threat_LambdaEffect[[1]] - (0.1*wolfcullEffect)
 #  "other predation" for adults = 
-wolvesOnAdults <- 0.1 * wolfCullEffect # =  0.0186 in Lambda units
+wolfCullPropOnAdults <- 0.1 # ASSUMPTION
+wolfCullPropOnJuvs <- 1 - wolfCullPropOnAdults
+wolvesOnAdults <- wolfCullPropOnAdults * wolfCullEffect # =  0.0186 in Lambda units
+
+#Threat_LambdaEffect[[1]][1] - otherOnAdults <- wolvesOnAdults # =  0.0692 in Lambda units
+
 otherOnAdults <- Threat_LambdaEffect[[1]][1] - wolvesOnAdults # =  0.0692 in Lambda units
+# Percent effectiveness on juvenile recruitment:
+wolvesOnAdults/(otherOnAdults + wolvesOnAdults)
+
+
+
 #  "other predation" for calves = 0.444584 - 0.9 * wolfCullEffect = 0.277 in Lambda units
 #     i.e. Threat_Lambda[[2]] - (0.1*wolfcullEffect)
 #  "other predation" for calves = 
-wolvesOnJuvs <- 0.9 * wolfCullEffect # 0.167 in lambda units
+wolvesOnJuvs <- wolfCullPropOnJuvs * wolfCullEffect # 0.167 in lambda units
 otherOnJuvs <- Threat_LambdaEffect[[2]][1] - wolvesOnJuvs # = 0.277 in Lambda units
 
+# Percent effectiveness on juvenile recruitment:
+effectiveness <- wolvesOnJuvs/(otherOnJuvs + wolvesOnJuvs)
+
+# Adults
+allOnAdults <- wolvesOnAdults/effectiveness
+otherOnAdults <- allOnAdults - wolvesOnAdults
 
 #   In InitialEvent units --> (0.06915 + Threat1_InitialFreq) / Threat1_InitialFreq
 a <- (otherOnAdults + Threat1_InitialFreq[1]) / Threat1_InitialFreq[1]
@@ -204,10 +222,12 @@ d <- ((wolvesOnAdults) + Threat1_InitialFreq[1]) / Threat1_InitialFreq[1]
 f <- ((wolvesOnJuvs) + Threat2_InitialFreq) / Threat2_InitialFreq
 
 # check to see if this matches the value of inital units of the barrier for threat 1, barrier 1:
-wolfCullEffect * 0.1 # for adults
-(a - 1)  + (d - 1)  + 1 # in initial units
+wolfCullEffect * wolfCullPropOnAdults # for adults
+# Threat1_barrier_1 <- (a - 1)  + (d - 1)  + 1 # in initial units
+(b - 1)  + (f - 1)  + 1 # in initial units # Sum of compensatory causes and non-compensatory causes 
+                        #  of "the predation effect", which is PropMortDay30ToSurvey_predation
 # should equal:
-Threat1_barriers[[1]] # :)
+sapply(Threat1_barriers, eval)[[1]] # :)
 # also, lambda values should equal
 #Threat1_LambdaEffect = wolvesOnAdults + otherOnAdults # check
 #Threat2_LambdaEffect = wolvesOnAdults + otherOnJuvs # check
@@ -230,18 +250,10 @@ mitigate <- function(cull, pens, rs){
   cull * pens* rs
 }
 
-
-Threat1_barriers <- c(1.5, 1.40, 0.65, 1.5, 1.0, 0.9, 1.0) # in units of Initial Frequency
-Threat2_barriers <- c(2.19) # in units of Initial Frequency
-Threat3_barriers <- c(1.05, 1, 1) # in units of Initial Frequency
-Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.00)
-
-
 #######################################################
-# step 6: Convert the inital frequency value
-# make sure these are the same as above...
+# step 6: sum the current events to get the total top event frequency
 
-(topEvent <- topEventCalculator(threatCalculator(Threat1_InitialFreq, Threat1_barriers), # in other words, the sum of the Threat_topevents - which meets the LOPA users manual instructions
+(topEvent <- topEventCalculator(threatCalculator(Threat1_InitialFreq, sapply(Threat1_barriers, eval)), # in other words, the sum of the Threat_topevents - which meets the LOPA users manual instructions
                                 threatCalculator(Threat2_InitialFreq, Threat2_barriers), 
                                 threatCalculator(Threat3_InitialFreq, Threat3_barriers), 
                                 threatCalculator(Threat4_InitialFreq, Threat4_barriers)))
@@ -249,9 +261,12 @@ message("This is the top event lambda: ", round(((1 - topEvent) + 1), 3)) # the 
 # The average herd is below the 40% lambda threshold
 
 # Eliot: I dont think the above top event lambda calculation is correct.
-# the top event is currently around 0.907, but the lambda calculation seems off (1.09), and dosent change despite what I do to the barriers
-# I feel like this needs to be a fraction
+# the top event is currently around 0.99, but the lambda calculation seems off (1.002), and dosent change despite what I do to the barriers
+# Two possibilities:
+## I feel like this top event frequency calculation needs to be a fraction
+## OR, there is something off with our calculation of the current top event frequencies for each threat.
 
 # Instead, try:
-TOpEvent_lambda<-100 - ((1-mortQuantile)*(1-topEvent)/(1-0.40))
+print(TopEvent_lambda <- lambdaQuartile < 1 + (1-topEvent))
+# still not quite right
 ###

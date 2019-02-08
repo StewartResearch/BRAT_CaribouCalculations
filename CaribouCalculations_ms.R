@@ -974,7 +974,7 @@ Threat4_InitialFreq <- Threat4_topevent/(prod(1.05, 1.05, 1.05, 1.00, 1.00))
 #######################################################
 # step 6: Convert the inital frequency values to values of lambda:
 
-Threat1_barriers <- c(1.0, 1.40, 0.65, 1.5, 1.0, 0.9, 1.0) # in units of Initial Frequency
+Threat1_barriers <- c(2.0, 1.40, 0.65, 1.5, 1.0, 0.9, 1.0) # in units of Initial Frequency
 Threat2_barriers <- c(2.19) # in units of Initial Frequency
 Threat3_barriers <- c(1.05, 1, 1) # in units of Initial Frequency
 Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.00)
