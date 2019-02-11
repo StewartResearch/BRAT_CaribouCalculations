@@ -137,7 +137,9 @@ Threat1_InitialFreq <- 0.05549 # ASSUMPTION
 ## predation effects, and applying the ratio to adult wolf vs compensatory predation. From there we could substitute in the current
 ## top event frequency (known from ECCC data), to get this inital frequency value.
 # ASSUMPTION: the effectiveness of wolfculls extends from juveniles to adults equally
-# ASSUMPTION: This is a constant applied to all populations to determine the threat values of adult predation. This might be a big assumption!
+# ASSUMPTION: This is a constant applied to all populations to determine the threat values of adult predation. 
+### This might be a big assumption!
+###### See how we calculated this at the end of the script.
 
 Threat1_barrier_1 <-  Threat1_multiplier / (Threat1_InitialFreq * prod(unlist(Threat1_barriers[-1])))
 Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
@@ -355,3 +357,29 @@ recr = (0.072 + 0.139)/2 # Juvenile recruitment
 sd1 <- 0.1 # ASSUMPTION # this value can go as high as 0.3, from the literature.
 
 # the results of this work is summarized in Tables 2 and 4 of the current BRAT manuscript (Winder et al. 2019)
+
+# #################################################################################################################################
+# # Threat 1 initial Frequency calcultion
+# 
+# Threat2_barrier_1
+# 
+# TEF = prod(Initial Frequency * barriers)
+# 0.054 = prod (wolves on adults + other on adults)*1.2285
+# 
+# wolvesOnAdults
+# other on adults = x
+# 
+# wolvesOnAdults
+# wolvesOnJuvs
+# 1-wolfCullBarrier
+# 
+# For juveniles we know that:
+# TEF = prod(initial Frequency * barriers)
+# 
+# effectiveness of wolves on juveniles
+# ## assume this ratio (30.7% effectiveness) applies to adults, AND to other populations
+# 
+# total juvienile predation
+# = other on juvs + wolves on juvs (all in lambda units)
+# 
+# threatBarrier1 = (total juvenile predation/inital frequency) + 1
