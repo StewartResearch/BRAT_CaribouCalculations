@@ -327,7 +327,7 @@ print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigate))
 # Step 8b: look at different management scenarios by changing the alternate value to equal 1 (i.e. no effect)
 # un comment below lines to look at these strategies, and how the postmitigate value changes
 
-#postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
+postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
 #postMitigate <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
 #postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
 #postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity penning and linear restoration
