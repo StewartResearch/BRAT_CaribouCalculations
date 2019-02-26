@@ -27,7 +27,7 @@
 # Set the barriers here -- this would be the numbers that go into the BRAT figure
 Threat1_barriers <- c(quote(Threat1_barrier_1), 1.40, 0.65, 1.5, 1.0, 0.9, 1.0) # in units of Initial Frequency
 Threat2_barriers <- quote(c(Threat2_barrier_1)) # in units of Initial Frequency # This is derived from data below
-Threat3_barriers <- c(1.05, 1, 1) # in units of Initial Frequency
+Threat3_barriers <- c(1.00, 1.00, 1.00) # in units of Initial Frequency
 Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.00)
 
 ###############################################################################
@@ -137,7 +137,9 @@ Threat1_InitialFreq <- 0.05549 # ASSUMPTION
 ## predation effects, and applying the ratio to adult wolf vs compensatory predation. From there we could substitute in the current
 ## top event frequency (known from ECCC data), to get this inital frequency value.
 # ASSUMPTION: the effectiveness of wolfculls extends from juveniles to adults equally
-# ASSUMPTION: This is a constant applied to all populations to determine the threat values of adult predation. This might be a big assumption!
+# ASSUMPTION: This is a constant applied to all populations to determine the threat values of adult predation. 
+### This might be a big assumption!
+###### See how we calculated this at the end of the script.
 
 Threat1_barrier_1 <-  Threat1_multiplier / (Threat1_InitialFreq * prod(unlist(Threat1_barriers[-1])))
 Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
@@ -237,7 +239,7 @@ wolvesOnAdults <- wolfCullPropOnAdults * wolfCullEffect # Lambda units
 otherOnAdults <- Threat_LambdaEffect[[1]][1] - wolvesOnAdults # Lambda units
 
 # Percent effectiveness on adult recruitment:
-wolvesOnAdults/(otherOnAdults + wolvesOnAdults)
+effectivenessAdults<- wolvesOnAdults/(otherOnAdults + wolvesOnAdults)
 
 
 #  "other predation" for calves = 0.444584 - 0.9 * wolfCullEffect = 0.277 in Lambda units
@@ -247,7 +249,7 @@ wolvesOnJuvs <- wolfCullPropOnJuvs * wolfCullEffect # Lambda units
 otherOnJuvs <- Threat_LambdaEffect[[2]][1] - wolvesOnJuvs # Lambda units
 
 # Percent effectiveness on juvenile recruitment:
-effectiveness <- wolvesOnJuvs/(otherOnJuvs + wolvesOnJuvs)
+effectivenessJuvs <- wolvesOnJuvs/(otherOnJuvs + wolvesOnJuvs)
 
 # Adults
 allOnAdults <- wolvesOnAdults/effectiveness
@@ -318,19 +320,20 @@ postMitigate <- function(topEvent, mitigate) {
   topEvent * mitigate
 }
 
-postMitigate <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.95)) # combined mitigation/normal scenario
-print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigate))
+postMitigateS <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.95)) # combined mitigation/normal scenario
+print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigateS))
+message("This is the consequence lambda: ", (1 + (1-postMitigateS)))
 
 #######################
 # Step 8b: look at different management scenarios by changing the alternate value to equal 1 (i.e. no effect)
 # un comment below lines to look at these strategies, and how the postmitigate value changes
 
-#postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
-#postMitigate <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
-#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
-#postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity penning and linear restoration
+#postMitigateS <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
+#postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
+#postMitigateS <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
+postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity penning and linear restoration
 
-print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigate))
+message("This is the consequence lambda: ", (1 + (1-postMitigateS)))
 
 #################################################################################################################################
 #################################################################################################################################
@@ -355,3 +358,29 @@ recr = (0.072 + 0.139)/2 # Juvenile recruitment
 sd1 <- 0.1 # ASSUMPTION # this value can go as high as 0.3, from the literature.
 
 # the results of this work is summarized in Tables 2 and 4 of the current BRAT manuscript (Winder et al. 2019)
+
+# #################################################################################################################################
+# # Threat 1 initial Frequency calcultion
+# 
+# Threat2_barrier_1
+# 
+# TEF = prod(Initial Frequency * barriers)
+# 0.054 = prod (wolves on adults + other on adults)*1.2285
+# 
+# wolvesOnAdults
+# other on adults = x
+# 
+# wolvesOnAdults
+# wolvesOnJuvs
+# 1-wolfCullBarrier
+# 
+# For juveniles we know that:
+# TEF = prod(initial Frequency * barriers)
+# 
+# effectiveness of wolves on juveniles
+# ## assume this ratio (30.7% effectiveness) applies to adults, AND to other populations
+# 
+# total juvienile predation
+# = other on juvs + wolves on juvs (all in lambda units)
+# 
+# threatBarrier1 = (total juvenile predation/inital frequency) + 1
