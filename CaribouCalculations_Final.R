@@ -322,6 +322,7 @@ postMitigate <- function(topEvent, mitigate) {
 
 postMitigateS <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.95)) # combined mitigation/normal scenario
 print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigateS))
+message("This is the consequence lambda: ", (1 + (1-postMitigateS)))
 
 #######################
 # Step 8b: look at different management scenarios by changing the alternate value to equal 1 (i.e. no effect)
@@ -332,7 +333,7 @@ print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigateS))
 #postMitigateS <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
 postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity penning and linear restoration
 
-#print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigateS))
+message("This is the consequence lambda: ", (1 + (1-postMitigateS)))
 
 #################################################################################################################################
 #################################################################################################################################
