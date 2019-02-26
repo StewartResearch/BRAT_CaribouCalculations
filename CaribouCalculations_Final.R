@@ -27,7 +27,7 @@
 # Set the barriers here -- this would be the numbers that go into the BRAT figure
 Threat1_barriers <- c(quote(Threat1_barrier_1), 1.40, 0.65, 1.5, 1.0, 0.9, 1.0) # in units of Initial Frequency
 Threat2_barriers <- quote(c(Threat2_barrier_1)) # in units of Initial Frequency # This is derived from data below
-Threat3_barriers <- c(0.95, 1, 1) # in units of Initial Frequency
+Threat3_barriers <- c(1.00, 1.00, 1.00) # in units of Initial Frequency
 Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.00)
 
 ###############################################################################
@@ -239,7 +239,7 @@ wolvesOnAdults <- wolfCullPropOnAdults * wolfCullEffect # Lambda units
 otherOnAdults <- Threat_LambdaEffect[[1]][1] - wolvesOnAdults # Lambda units
 
 # Percent effectiveness on adult recruitment:
-wolvesOnAdults/(otherOnAdults + wolvesOnAdults)
+effectivenessAdults<- wolvesOnAdults/(otherOnAdults + wolvesOnAdults)
 
 
 #  "other predation" for calves = 0.444584 - 0.9 * wolfCullEffect = 0.277 in Lambda units
@@ -249,7 +249,7 @@ wolvesOnJuvs <- wolfCullPropOnJuvs * wolfCullEffect # Lambda units
 otherOnJuvs <- Threat_LambdaEffect[[2]][1] - wolvesOnJuvs # Lambda units
 
 # Percent effectiveness on juvenile recruitment:
-effectiveness <- wolvesOnJuvs/(otherOnJuvs + wolvesOnJuvs)
+effectivenessJuvs <- wolvesOnJuvs/(otherOnJuvs + wolvesOnJuvs)
 
 # Adults
 allOnAdults <- wolvesOnAdults/effectiveness
@@ -320,19 +320,19 @@ postMitigate <- function(topEvent, mitigate) {
   topEvent * mitigate
 }
 
-postMitigate <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.95)) # combined mitigation/normal scenario
-print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigate))
+postMitigateS <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.95)) # combined mitigation/normal scenario
+print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigateS))
 
 #######################
 # Step 8b: look at different management scenarios by changing the alternate value to equal 1 (i.e. no effect)
 # un comment below lines to look at these strategies, and how the postmitigate value changes
 
-#postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
-#postMitigate <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
-#postMitigate <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
-#postMitigate <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity penning and linear restoration
+#postMitigateS <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
+#postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
+#postMitigateS <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
+postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity penning and linear restoration
 
-print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigate))
+#print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigateS))
 
 #################################################################################################################################
 #################################################################################################################################
