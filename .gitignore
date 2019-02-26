@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-.docx
-.xlsx
+# ignore generated .doc and .xlsx files
+*.docx
+*.xlsx
