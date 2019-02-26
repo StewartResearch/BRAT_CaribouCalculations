@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-.docx
-.xlsx
+# ignore generated .docx and .xlsx files
+**/BRAT_CaribouCalculations/*.docx
+**/BRAT_CaribouCalculations/*.xlsx
