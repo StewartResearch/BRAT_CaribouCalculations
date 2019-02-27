@@ -315,23 +315,35 @@ message("This is the top event lambda: ", round(((1 - topEvent) + 1), 3))
 # does the top event exceed the lambda quartile?
 print(TopEvent_lambda <- lambdaQuartile < 1 + (1-topEvent))
 
-# what about after mitigation?
+##################################################################################################
+# step 9: what about after mitigation?
 postMitigate <- function(topEvent, mitigate) {
   topEvent * mitigate
 }
 
-postMitigateS <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.95)) # combined mitigation/normal scenario
+postMitigateS <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.950)) # combined mitigation/normal scenario
+# values are from the literature, and can be changed # ASSUMTION/DATA
+message("This is the consequence frequency: ", postMitigateS)
+
+# Convert these inital frequency to values of lambda:
+
+Mitigation_LambdaEffect <- list()
+Mitigation_LambdaEffect[[1]] <- topEvent * (1 - 0.95) # linear restoration mitigation value, in Lambda units
+Mitigation_LambdaEffect[[2]] <- topEvent* (1 - 0.814) # wolf cull mitigation value, in Lambda units
+Mitigation_LambdaEffect[[3]] <- topEvent * (1 - 0.95) # maternal penning (exclosures) mitigation value, in Lambda units 
+
+
 print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigateS))
 message("This is the consequence lambda: ", (1 + (1-postMitigateS)))
 
 #######################
-# Step 8b: look at different management scenarios by changing the alternate value to equal 1 (i.e. no effect)
-# un comment below lines to look at these strategies, and how the postmitigate value changes
+# Step 9b: look at different management scenarios by changing the alternate value to equal 1 (i.e. no effect)
+# un-comment below lines to look at these strategies, and how the postmitigate value changes
 
 #postMitigateS <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
 #postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
 #postMitigateS <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
-postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity penning and linear restoration
+#postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity penning and linear restoration
 
 message("This is the consequence lambda: ", (1 + (1-postMitigateS)))
 
