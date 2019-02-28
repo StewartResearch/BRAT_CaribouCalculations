@@ -63,8 +63,9 @@ Mortrecr = (1 - recr) # part of this will go into the Initial frequency of the t
 #####
 
 Threat1_multiplier = MortSadF * 0.90 # ASSUMPTION # I'm assuming that 90% of the variation in SadF is due to predation. This can be changed.
-Threat2_multiplier = Mortrecr * 0.95 # ASSUMPTION # 5% of random juvenile deaths are due to factors other than predation (calculated below based on maternity pen literature and pers coms)
-Threat3_multiplier = MortSadF * 0.05 + Mortrecr * 0.025 # ASSUMPTION # we split the remaining 10% of the variation in SadF between the final two threats. We also split the remaining 5% of rec between the final two threats.
+#Threat2_multiplier = Mortrecr * 0.95 # ASSUMPTION # 5% of random juvenile deaths are due to factors other than predation (calculated below based on maternity pen literature and pers coms)
+# within Threat2 we assume 90% of mortality is due to predation for juveniles. We add the remaining 10% to the final two multiplers
+Threat3_multiplier = MortSadF * 0.05 #+ Mortrecr * 0.05 # ASSUMPTION # we split the remaining 10% of the variation in SadF between the final two threats. We also split the remaining 5% of rec between the final two threats.
 Threat4_multiplier = Threat3_multiplier # ASSUMPTION
 
 # Assumptions about caribou population demongraphics, from published literaure, reports, and pers. comms:
@@ -156,7 +157,7 @@ predationAdultRev <- function(Threat1_InitialFreq, avoid, seismic, huntPred, ear
 ### Initial Frequency
 ##### (i.e. rather all else being equal, how many cows produce a calf a year later if predation is a factor)
 # Initial frequency = Pregnancy Rate*Adult female survival*Calf survival to Day 30
-Threat2_InitialSurv <- pregR * SadF * surv1stDay # proportion of females that produce a calf
+Threat2_InitialSurv <- pregR * SadF * surv1stDay # proportion of females that produce a  calf
 Threat2_InitialFreq <- (1 - (Threat2_InitialSurv)) # proportion of females at the start of a year that result in no calf a year later
 
 ### Current Top Event Frequency
@@ -164,11 +165,12 @@ Threat2_InitialFreq <- (1 - (Threat2_InitialSurv)) # proportion of females at th
 #  many calf deaths from day 1 to a population survey are unaccounted for?)
 PropMortDay30ToSurvey = Mortrecr - Threat2_InitialFreq 
 # We know from maternal penning data that even between day 2 and day 30, 90% of calves survive 
-#   (i.e. even without predation, 90% of calves survive, and 10% die from "other causes; Scott McNay pers comm - Klinse-Za meternity pen)
-## Assume this rate remains consistent from day 2 to a population survey - MIGHT BE A BIG ASSUMPTION!
-PropMortDay30ToSurvey_predation <- PropMortDay30ToSurvey * 0.9 # DATA/ASSUMPTION #
+#   (i.e. even without predation, 90% of calves survive, and 10% die from "other causes"; Scott McNay pers comm - Klinse-Za meternity pen)
+## Assume this rate is consistent from day 2 to a population survey - MIGHT BE A BIG ASSUMPTION!
+PropMortDay30ToSurvey_predation <- (PropMortDay30ToSurvey * 0.9) # DATA/ASSUMPTION #
+# but only 1/2 of these calves will be female ####
 # Mortality due to predation, plus mortality due to other causes will be the Current Top Event Frequency:
-Threat2_topevent <- PropMortDay30ToSurvey_predation + Threat2_InitialFreq
+Threat2_topevent <- PropMortDay30ToSurvey_predation + Threat2_InitialFreq ####
 
 ### Barrier value: Effect of predator avoidance
 ##### Because this is the only barrier to the threat of predation that we have identified, we can now easily calculate this number
@@ -179,13 +181,15 @@ Threat2_barrier_1 <- Threat2_barriers[1]
 # Needed for the rest of the framework:
 ### From above, we can calculate the proportion of juvenile mortalities that are NOT due to predation
 Difference_nonpredation = PropMortDay30ToSurvey - PropMortDay30ToSurvey_predation
-### Therefore, we need to add the multiplier of 1/2 this rate to the final two Threats, to account for the proportion 
-# directly attributable to juveniles
-### Remember at the start of this script I already specified Threat multipliers. You can change them there if needed.
+# but only 1/2 of these calves will be female, and contribute to then next generation.
+Difference_nonpredationF = Difference_nonpredation *0.5 ####
+### We need split this rate to the final two Threats, to account for the proportion of non-predation mortality
+# directly attributable to female juveniles
+
 
 # Threat 3: Permanent habitat appropriation
 ### Current Top Event Frequency
-Threat3_topevent = Threat3_multiplier + 0.5 * Difference_nonpredation # DATA/ASSUMPTION
+Threat3_topevent = Threat3_multiplier + (0.5 * Difference_nonpredationF) # DATA/ASSUMPTION #### ----
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to backcalculte this value
@@ -194,7 +198,8 @@ Threat3_InitialFreq <- Threat3_topevent/(prod(Threat3_barriers))
 
 # Threat 4: Stresses reducing caribou fitness and health
 ### Current top event frequency
-Threat4_topevent <- Threat4_multiplier + 0.5 * Difference_nonpredation # DATA/ASSUMPTION 
+Threat4_topevent <- Threat4_multiplier + (0.5 * Difference_nonpredation) # DATA/ASSUMPTION #### ----
+# assumed mortality proportion for adult females, plus, what we know of juvenile mortality minus 50% of what we dont know about juvenile mortality
 
 ### Initial Frequency
 # multiply it by what values exist in the barrier to back calculte this value
