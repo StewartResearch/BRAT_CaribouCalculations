@@ -252,7 +252,7 @@ otherOnJuvs <- Threat_LambdaEffect[[2]][1] - wolvesOnJuvs # Lambda units
 effectivenessJuvs <- wolvesOnJuvs/(otherOnJuvs + wolvesOnJuvs)
 
 # Adults
-allOnAdults <- wolvesOnAdults/effectiveness
+allOnAdults <- wolvesOnAdults/effectivenessAdults
 otherOnAdults <- allOnAdults - wolvesOnAdults
 
 
