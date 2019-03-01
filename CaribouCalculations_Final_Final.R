@@ -328,7 +328,7 @@ message("This is the consequence lambda: ", (1 + (1-postMitigateS)))
 #postMitigateS <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
 postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity penning and linear restoration
 
-message("This is the consequence lambda: ", (1 + (1-postMitigateS)))
+message("This is the consequence lambda after mitigation: ", (1 + (1-postMitigateS)))
 
 #################################################################################################################################
 #################################################################################################################################
