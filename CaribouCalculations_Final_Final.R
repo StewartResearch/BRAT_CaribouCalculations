@@ -331,11 +331,96 @@ postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity pen
 message("This is the consequence lambda after mitigation: ", (1 + (1-postMitigateS)))
 
 #################################################################################################################################
-#################################################################################################################################
+# Step 9: Print the BRAt table, with values
+# this should be the same as Figure 2 in the manuscipt
+
+## Threat 1
+print("This is Threat 1")
+message("Threat 1, Initial Frequency: ", Threat1_InitialFreq)
+message ("Threat 1, Current top event Frequency: ", Threat1_topEvent)
+
+message ("Threat1, barrier1, frequency: ", Threat1_barrier_1)
+message ("Threat1, barrier2, frequency: ", Threat1_barriers[2])
+message ("Threat1, barrier3, frequency: ", Threat1_barriers[3])
+message ("Threat1, barrier4, frequency: ", Threat1_barriers[4])
+message ("Threat1, barrier5, frequency: ", Threat1_barriers[5])
+message ("Threat1, barrier6, frequency: ", Threat1_barriers[6])
+message ("Threat1, barrier7, frequency: ", Threat1_barriers[7])
+
+message ("Threat1, barriers, lambda list 1 through 7: ", Threat_LambdaEffect[c(1)]) # this goes in the comment box
+
+message ("Threat 1, barrier1, comments, additive predation: ", wolvesOnAdults) # this goes in the comment box
+message ("Threat 1, barrier1, comments, compensatory predation: ", otherOnAdults) # this goes in the comment box
+message ("Threat 1, barrier1, comments, effectiveness on adults: ",  effectivenessAdults) # this goes in the comment box
+
+
+# Threat 2
+print("This is Threat 2")
+message("Threat 2, Initial Frequency: ", Threat2_InitialFreq)
+message ("Threat 2, Current top event Frequency: ", Threat2_topevent)
+
+message ("Threat2, barrier2, frequency: ", Threat2_barrier_1)
+
+message ("Threat2, barriers, lambda: ", Threat_LambdaEffect[c(2)]) # this goes in the comment box
+
+message ("Threat 2, barrier2, comments, additive predation: ", wolvesOnJuvs) # this goes in the comment box
+message ("Threat 2, barrier2, comments, compensatory predation: ", otherOnJuvs) # this goes in the comment box
+message ("Threat 2, barrier2, comments, effectiveness on adults: ",  effectivenessJuvs) # this goes in the comment box
+
+#Threat3
+print ("this is Threat 3")
+message("Threat 3, Initial Frequency: ", Threat3_InitialFreq)
+message ("Threat 3, Current top event Frequency: ", Threat3_topevent)
+
+message ("Threat3, barrier1, frequency: ", Threat3_barriers[1])
+message ("Threat3, barrier2, frequency: ", Threat3_barriers[2])
+message ("Threat3, barrier3, frequency: ", Threat3_barriers[3])
+
+message ("Threat1, barriers, lambda list 1 through 3: ", Threat_LambdaEffect[c(3)]) # these go in the comment boxes
+
+#Threat4
+print ("this is Threat 4")
+message("Threat 4, Initial Frequency: ", Threat4_InitialFreq)
+message ("Threat 4, Current top event Frequency: ", Threat4_topevent)
+
+message ("Threat4, barrier1, frequency: ", Threat4_barriers[1])
+message ("Threat4, barrier2, frequency: ", Threat4_barriers[2])
+message ("Threat4, barrier3, frequency: ", Threat4_barriers[3])
+message ("Threat4, barrier3, frequency: ", Threat4_barriers[4])
+message ("Threat4, barrier3, frequency: ", Threat4_barriers[5])
+
+message ("Threat1, barriers, lambda list 1 through 5: ", Threat_LambdaEffect[c(4)]) # these go in the comment boxes
+
+
+## Hazzard (Policy objective)
+message ("This is the target frequency: ", (1+(1-lambdaQuartile)))
+message ("This is the target lambda: ", lambdaQuartile) # put this in the risk event red circle
+message ("This is the Current Total top event frequency: ", topEvent)
+message ("This is the current Total top event lambda: ", (1+(1-topEvent))) # put this in comments
+
+
+### Mitigation Boxes
+message ("This is the 'responsive restoration of linear features to reduce access': ", 0.95)
+message ("This is the 'responsive restoriation of linear features to reduce access': ", Mitigation_LambdaEffect[1]) # put this in the comment box
+
+message ("This is the 'wolf cull': ", 0.814)
+message ("This is the 'wolf cull': ", Mitigation_LambdaEffect[2]) # put this in the comment box
+
+message ("This is the 'Intensive in situ conservation': ", 0.95)
+message ("This is the 'Intensive in situ conservation': ", Mitigation_LambdaEffect[3]) # put this in the comment box
+
+#### Consequency Box
+message ("This is the acceptable consequency frequency: ", (1+(1-lambdaQuartile)))
+message ("This is the current consequence frequency: ", postMitigateS)
+message ("This is the current consequency lambda: ", (1+(1-postMitigateS))) # put this in a comment box
+
+
 
 
 #################################################################################################################################
-# Step 9: Repeat the above, but substitute in different demographic data for different herds
+#################################################################################################################################
+
+# Step 10: Repeat the above, but substitute in different demographic data for different herds
 # In winder et al. 2019 we have repeated the above with two different herds:
 
 
