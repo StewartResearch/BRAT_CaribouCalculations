@@ -113,6 +113,11 @@ print(lambdaQuartile)
 
 # Threat 1 - General predation
 ### Current Top Event Frequency
+## ADD IF LOOP - IF MORTSADF > 0.6 use the below. ----
+if(MortSadF < 0.10) {
+  Threat1_InitialFreq <- MortSadF*0.4
+
+  } else {
 Threat1_InitialFreq <- 0.05549 # ASSUMPTION
 # This calculation involved back calculating from the wolf mitigation initial frequency, to the juvenile predation threat frequency,
 ## translating this value into lambda units of wolf predation and compensatory predation, calculating the ratio between these
@@ -122,10 +127,14 @@ Threat1_InitialFreq <- 0.05549 # ASSUMPTION
 # ASSUMPTION: This is a constant applied to all populations to determine the threat values of adult predation. 
 ### This might be a big assumption!
 ###### See how we calculated this at the end of the script.
+}
+
 
 Threat1_barrier_1 <-  Threat1_multiplier / (Threat1_InitialFreq * prod(unlist(Threat1_barriers[-1])))
 Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
 Threat1_InitialFreq <- Threat1_topEvent/prod(sapply(Threat1_barriers, eval))
+
+## ELSE, PUT THREAT1_INITIALfREQUENCE <- MORTSADF*0.6
 
 ### Initial Frequency
 ##### calculated from the BRAT threat line:
@@ -188,7 +197,7 @@ Threat4_InitialFreq <- Threat4_topevent/(prod(Threat4_barriers))
 # step 5: Convert the inital frequency values to values of lambda:
 
 Threat_LambdaEffect <- list()
-Threat_LambdaEffect[[1]] <- Threat1_InitialFreq * sapply(Threat1_barriers, eval) - Threat1_InitialFreq # in Lambda units
+Threat_LambdaEffect[[1]] <- (Threat1_InitialFreq * sapply(Threat1_barriers, eval)) - Threat1_InitialFreq # in Lambda units
 Threat_LambdaEffect[[2]] <- Threat2_InitialFreq * Threat2_barriers - Threat2_InitialFreq # in Lambda units
 Threat_LambdaEffect[[3]] <- Threat3_InitialFreq * Threat3_barriers - Threat3_InitialFreq # in Lambda units
 Threat_LambdaEffect[[4]] <- Threat4_InitialFreq * Threat4_barriers - Threat4_InitialFreq # in Lambda units
@@ -215,7 +224,7 @@ Threat_LambdaEffect[[2]]
 #  "other predation" for adults = 
 
 # ASSUMPTION # we assumed that the majority of predation happend on juveniles (Hervieux et al. 2014)
-wolfCullPropOnAdults <- 0.1 
+wolfCullPropOnAdults <- 0.1
 wolfCullPropOnJuvs <- 1 - wolfCullPropOnAdults
 # therefore: 
 wolvesOnAdults <- wolfCullPropOnAdults * wolfCullEffect # Lambda units
@@ -331,10 +340,10 @@ postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity pen
 message("This is the consequence lambda after mitigation: ", (1 + (1-postMitigateS)))
 
 #################################################################################################################################
-# Step 9: Print the BRAt table, with values
+# Step 9: Print the BRAT table, with values
 # this should be the same as Figure 2 in the manuscipt
 
-## Threat 1
+# Threat 1
 print("This is Threat 1")
 message("Threat 1, Initial Frequency: ", Threat1_InitialFreq)
 message ("Threat 1, Current top event Frequency: ", Threat1_topEvent)
@@ -365,7 +374,7 @@ message ("Threat2, barriers, lambda: ", Threat_LambdaEffect[c(2)]) # this goes i
 
 message ("Threat 2, barrier2, comments, additive predation: ", wolvesOnJuvs) # this goes in the comment box
 message ("Threat 2, barrier2, comments, compensatory predation: ", otherOnJuvs) # this goes in the comment box
-message ("Threat 2, barrier2, comments, effectiveness on adults: ",  effectivenessJuvs) # this goes in the comment box
+message ("Threat 2, barrier2, comments, effectiveness on juveniles: ",  effectivenessJuvs) # this goes in the comment box
 
 #Threat3
 print ("this is Threat 3")
@@ -415,8 +424,6 @@ message ("This is the current consequence frequency: ", postMitigateS)
 message ("This is the current consequency lambda: ", (1+(1-postMitigateS))) # put this in a comment box
 
 
-
-
 #################################################################################################################################
 #################################################################################################################################
 
@@ -429,16 +436,20 @@ N = 360 # population of the Chinchaga herd as of 2008
 SadF = 0.94 # Adult female survival 
 recr = 0.072/2 # Juvenile female recruitment 
 sd1 <- 0.1 # ASSUMPTION # this value can go as high as 0.3, from the literature.
+#Also, set:
+#wolfCullPropOnAdults <- MortSadF*0.8
+#Threat1_InitialFreq <- 0.05549*0.9 # ASSUMPTION
 
 # and An "averaged" population
-# ASSUMPTION: No one herd demography is accurate for a study area. Instead, we quantify the BRAT analysis at the meta region.
+# ASSUMPTION: No one herd demography is accurate for a study area. Instead, we quantify the BRAT analysis at the meta-region.
 N = (360 +  250)/2 # population of the Chinchaga herd as of 2008
 SadF = (0.94 + 0.87)/2 # Adult female survival 
 recr = ((0.072 + 0.139)/2)/2 # Juvenile female recruitment 
 sd1 <- 0.1 # ASSUMPTION # this value can go as high as 0.3, from the literature.
 
+##################################################################################################################################
 # the results of this work is summarized in Tables 2 and 4 of the current BRAT manuscript (Winder et al. 2019)
-
+##################################################################################################################################
 
 ###################################################################################################################################
 # Other information:
