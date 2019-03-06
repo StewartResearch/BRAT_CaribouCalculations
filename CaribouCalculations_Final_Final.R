@@ -113,19 +113,26 @@ print(lambdaQuartile)
 
 # Threat 1 - General predation
 ### Current Top Event Frequency
-## ADD IF LOOP - IF MORTSADF > 0.6 use the below. ----
+# some herds have very low adult female mortality. Thorugh trial and error with Snake and the Averaged herds, we discovered that
+# if MortSadF is less than 0.1 (i.e less than 10% of adult females are dying) the effectiveness of wolf controls was listed as > 100%.
+# this just didnt make any sense. We therefore assume # ASSUMPTION # that 10% represents an ecological threshold of other processes
+# dominating adult female survival. We discovered that if we limit the initial frequency of adult female mortality to only 40%
+# by predation, the effectiveness of wolf controls made sense (i.e. less than 100%) across all study situations. We therefore assume
+# that if less than 10% of females are dying, 4% will be due to wolf predation, and the other 6% will be due to other causes (highlighted
+# in threats 3 and 4).
 if(MortSadF < 0.10) {
   Threat1_InitialFreq <- MortSadF*0.4
 
-  } else {
+  } else { # if not, we back calculated the required threat value:
 Threat1_InitialFreq <- 0.05549 # ASSUMPTION
 # This calculation involved back calculating from the wolf mitigation initial frequency, to the juvenile predation threat frequency,
 ## translating this value into lambda units of wolf predation and compensatory predation, calculating the ratio between these
 ## predation effects, and applying the ratio to adult wolf vs compensatory predation. From there we could substitute in the current
 ## top event frequency (known from ECCC data), to get this inital frequency value.
 # ASSUMPTION: the effectiveness of wolfculls extends from juveniles to adults equally
-# ASSUMPTION: This is a constant applied to all populations to determine the threat values of adult predation. 
-### This might be a big assumption!
+# ASSUMPTION: This is a constant applied to all populations to determine the threat values of adult predation (as long as adult female
+# mortality is > 10%. See above portion of the IF statement). 
+### This might be a big assumption! But it is mitigated by the above IF statement.
 ###### See how we calculated this at the end of the script.
 }
 
@@ -134,13 +141,11 @@ Threat1_barrier_1 <-  Threat1_multiplier / (Threat1_InitialFreq * prod(unlist(Th
 Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
 Threat1_InitialFreq <- Threat1_topEvent/prod(sapply(Threat1_barriers, eval))
 
-## ELSE, PUT THREAT1_INITIALfREQUENCE <- MORTSADF*0.6
-
 ### Initial Frequency
 ##### calculated from the BRAT threat line:
-predationAdultRev <- function(Threat1_InitialFreq, avoid, seismic, huntPred, earlySeral, huntCaribou, huntAltPrey) { # calculate the initial frequency of predation given the current frequency and the values of the thresholds
-  TopEventFreq/ (avoid * seismic * huntPred * earlySeral * huntCaribou * huntAltPrey)
-}
+# predationAdultRev <- function(Threat1_InitialFreq, avoid, seismic, huntPred, earlySeral, huntCaribou, huntAltPrey) { # calculate the initial frequency of predation given the current frequency and the values of the thresholds
+#   TopEventFreq/ (avoid * seismic * huntPred * earlySeral * huntCaribou * huntAltPrey)
+# }
 
 
 # Threat 2 - Juvenile predation
