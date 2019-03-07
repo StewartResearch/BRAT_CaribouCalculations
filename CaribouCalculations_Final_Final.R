@@ -412,7 +412,6 @@ for(i in 1:length(my_labels)) {
       text(x = 0.050, y = 0.11, "Current frequency", cex = my_text_size)
       text(x = 0.050, y = 0.09, Threat3_topevent, cex = my_text_size)
         }
-    
 }
 # identify the barrier boxes, and add their values
 # remind myself of which position numbers represent barriers:
@@ -512,7 +511,71 @@ for(i in 1:length(my_labels)) {
 
 # Hazard, mitigation, and consequence portion of the BRAT diagram
 
-
+# creates an empty plot
+openplotmat()
+# create the coordinates
+# I want 5 boxes (1 hazzard, 3 mitigations, 1 consequence) all on the same line
+pos <- coordinates(c(5))
+pos # gives the position of these boxes
+class(pos)
+plot(pos, type = 'n', main = "BRAT diagram hazzard, mitigation, and consequence", xlim = c(0, 1), ylim = c(0.1, 0.8), ylab = "", xlab = "")
+#text(pos)
+# add arrows and segments between positional numbers first
+# Main line
+segmentarrow(from = pos[1,], to = pos[5,], dd = 0.45)
+# now draw boxes on top of the arrows
+my_labels<-c(1:5)
+my_hazzard<-c(1)
+my_mitigation<-c(2, 3, 4)
+my_consequence<-c(5)
+my_text_size = 0.9
+my_edge_length <- 0.05
+# identify the Hazzard box
+for(i in 1:length(my_labels)) {
+  if (i %in% my_labels[1]){
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length, lab = "HAZZARD \n Target Frequency", cex = my_text_size, box.col = "red")
+    text(x = pos[i], y = pos[,2][1]-0.03, (1+(1-lambdaQuartile)), cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "Target lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, lambdaQuartile, cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.09, "Current Total top event frequency: ", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.11,  topEvent, cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.13, "Current Total top event lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.15, (1+(1-topEvent)), cex = my_text_size)
+  } 
+  }
+# identify the mitigation boxes
+for(i in 1:length(my_labels)) {
+  if (i %in% my_labels[2]){
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length, lab = "Mitigation 1 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, "0.95", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "Mitigation lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Mitigation_LambdaEffect[[1]], cex = my_text_size)
+  } else if (i %in% my_labels[3]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Mitigation 2 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, "0.814", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "Mitigation lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Mitigation_LambdaEffect[[2]], cex = my_text_size)
+  } else if (i %in% my_labels[4]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Mitigation 3 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, "0.95", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "Mitigation lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Mitigation_LambdaEffect[[3]], cex = my_text_size)
+  }
+}
+# identify the consequence boxes
+for(i in 1:length(my_labels)) {
+  if (i %in% my_labels[5]){
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length, lab = "CONSEQUENCE \n  target frequency", cex = my_text_size, box.col = "green")
+    text(x = pos[i], y = pos[,2][1]-0.03, (1+(1-lambdaQuartile)), cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "Consequence target lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, lambdaQuartile, cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.09, "Current consequence frequency: ", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.11,  postMitigateS, cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.13, "current consequence top event lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.15, (1+(1-postMitigateS)), cex = my_text_size)
+  } 
+}
+# make sure to Zoom on the plot to expand the figure enough to see all the numbers clearly
 #############################################################################################################################
 # Step 9b: Or you can just print out each value on its own
 
