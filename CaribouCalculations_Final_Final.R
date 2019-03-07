@@ -20,7 +20,7 @@
 
 ###########################
 ###########################
-# Chinchaga herd (STUDY AREA 1) - DONE ---- 
+# Chinchaga herd (STUDY AREA 1) ----
 ###########################
 
 #########
@@ -31,7 +31,7 @@ Threat3_barriers <- c(1.00, 1.00, 1.00) # in units of Initial Frequency
 Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.00)
 
 ###############################################################################
-# Step 1: know (or estimate) some basic information about each study area/herd. 
+# Step 1: know (or estimate) some basic information about each study area/herd. ----
 ### average demographic values between snake and Chinchaga as of 2008 - from downloadable csv online:
 # source: https://open.canada.ca/data/en/dataset/4eb3e825-5b0f-45a3-8b8b-355188d24b71
 
@@ -51,7 +51,7 @@ Mortrecr = (1 - recr) # part of this will go into the Initial frequency of the t
 
 
 ################################
-# Step 2: State your assumptions
+# Step 2: State your assumptions ----
 ### In this example, there are 4 threats. 
 ### Three of these threats apply to adult females, and three of these threats apply to juveniles
 ### One threat each applies to only adult females and juveniles
@@ -79,7 +79,7 @@ surv1stDay <- 0.8 * sexRatio # DATA/ASSUMPTION # juvenile female survival to the
 mort1stDay <- 1 - (surv1stDay)  
 
 ###########################################################################################################
-# Step 3: calculate a normal distribution, and indicate the 60% value
+# Step 3: calculate a normal distribution, and indicate the 60% value ----
 ### This 60% value comes from Environment and Climate Change Canada's 2012 boreal caribou recovery strategy
 ### indicating the threshold of 35% landscape disturbance = 60% survival probability of herd persistence. 
 ### In other words, we are OK with 40% of the herds dissapearing, on average.
@@ -94,7 +94,7 @@ print(lambdaQuartile)
 # 1.02
 
 ##################################################################################
-# Step 4:populating the BRAT framework Initial frequency and Current top events of threats
+# Step 4:populating the BRAT framework Initial frequency and Current top events of threats ----
 # Step 4 thorugh 6 are summarized in Table 2 of the manuscript (Winder et al. 2019)
 
 # Determining what vlaues should go into the Initial Frequency of a Threat (Blue boxes), and what values should 
@@ -199,7 +199,7 @@ Threat4_topevent <- Threat4_multiplier + (0.5 * Difference_nonpredation) # DATA/
 Threat4_InitialFreq <- Threat4_topevent/(prod(Threat4_barriers))
 
 #######################################################
-# step 5: Convert the inital frequency values to values of lambda:
+# step 5: Convert the inital frequency values to values of lambda ----
 
 Threat_LambdaEffect <- list()
 Threat_LambdaEffect[[1]] <- (Threat1_InitialFreq * sapply(Threat1_barriers, eval)) - Threat1_InitialFreq # in Lambda units
@@ -276,7 +276,7 @@ sapply(Threat1_barriers, eval)[[1]] # :)
 #Threat2_LambdaEffect = wolvesOnAdults + otherOnJuvs # check
 
 ########################
-# Step 6: Calculate the Current Total Top Event and Current Consequency (i.e. Mitigate) vlaues
+# Step 6: Calculate the Current Total Top Event and Current Consequency (i.e. Mitigate) values ----
 # these values can be changed to better reflect data as it becomes available:
 ### the first number of each function is the probability that the threat affects the citical event (lambda below zero)
 ### the subsequent numbers of each function are the probability that the barrers will FAIL to prevent the threat
@@ -294,7 +294,7 @@ mitigate <- function(cull, pens, rs){
 }
 
 #######################################################
-# step 7: sum the current events to get the total top event frequency
+# step 7: sum the current events to get the total top event frequency ----
 # Summarized in Table 2 of the manuscript (Winder et al. 2019)
 
 threatCalculator <- function(init, barriers) {
@@ -313,7 +313,7 @@ message("This is the top event lambda: ", round(((1 - topEvent) + 1), 3))
 print(TopEvent_lambda <- lambdaQuartile < 1 + (1-topEvent))
 
 ##################################################################################################
-# step 8: what about after mitigation?
+# step 8: what about after mitigation? ----
 postMitigate <- function(topEvent, mitigate) {
   topEvent * mitigate
 }
@@ -345,8 +345,82 @@ postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity pen
 message("This is the consequence lambda after mitigation: ", (1 + (1-postMitigateS)))
 
 #################################################################################################################################
-# Step 9: Print the BRAT table, with values
+# Step 9: Print the BRAT table, with values ----
 # this should be the same as Figure 2 in the manuscipt
+
+install.packages('diagram')
+library(diagram)
+
+# creates an empty plot
+openplotmat()
+
+# create the coordinates
+# I want the boxes arranged in a 8, 2, 4, 6 formation (for Threat names/initial/top values, and one for each barrier)
+pos <- coordinates(c(8,2,4,6))
+pos # gives the position of these boxes
+class(pos)
+plot(pos, type = 'n', main = "BRAT diagram Threats and barriers", xlim = c(0, 1), ylim = c(0.1, 0.8), ylab = "", xlab = "")
+#text(pos)
+
+# add arrows and segments between positional numbers first
+# Threat1
+segmentarrow(from = pos[1,], to = pos[8,], dd = 0.45)
+# Threat2
+segmentarrow(from = pos[9, ], to = pos[10, ], dd = 0.45)
+#Threat3
+segmentarrow(from = pos[11, ], to = pos[14, ], dd = 0.45)
+#Threat3
+segmentarrow(from = pos[15, ], to = pos[20, ], dd = 0.45)
+
+# now draw boxes on top of the arrows
+my_labels<-c(1:20)
+#my_names_Threats<-strsplit("Threat 1, Threat 2, Threat 3, Threat 4", ",")
+#my_threats<-c(1, 9, 11, 15)
+Threat1<-c(1)
+Threat2<-c(9)
+Threat3<-c(11)
+Threat4<-c(15)
+my_names_barriers<-c(1, 2, 3, 4, 5, 6, 7, 1, 1, 2, 3, 1, 2, 3, 4, 5)
+my_barriers<-c(2, 3, 4, 5, 6, 7, 8, 10, 12, 13, 14, 16, 17, 18, 19, 20)
+my_text_size = 0.9
+my_edge_length <- 0.05
+
+
+# identify the barrier boxes
+for (i in 1:length(my_labels)) {
+  if (i %in% 1:length(my_barriers)) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = ("barrier"), cex = my_text_size, box.col = "white")
+  }
+}
+
+# identify the threat boxes
+for(i in 1:length(my_labels)) {
+  if (i %in% Threat1){
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length, lab = "Threat 1 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
+      text(x = 0.0275, y = 0.71, Threat1_InitialFreq, cex = my_text_size)
+      text(x = 0.0275, y = 0.69, "Current frequency", cex = my_text_size)
+      text(x = 0.0275, y = 0.67, Threat1_topEvent, cex = my_text_size)
+    } else if (i %in% Threat2) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Threat 2 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
+      text(x = 0.230, y = 0.55, Threat2_InitialFreq, cex = my_text_size)
+      text(x = 0.230, y = 0.53, "Current frequency", cex = my_text_size)
+      text(x = 0.230, y = 0.51, Threat2_topevent, cex = my_text_size)
+      } else if (i %in% Threat3) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Threat 3 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
+      text(x = 0.095, y = 0.38, Threat3_InitialFreq, cex = my_text_size)
+      text(x = 0.095, y = 0.36, "Current frequency", cex = my_text_size)
+      text(x = 0.095, y = 0.34, Threat3_topevent, cex = my_text_size)
+      } else if (i %in% Threat4) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Threat 4 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
+      text(x = 0.050, y = 0.22, Threat3_InitialFreq, cex = my_text_size)
+      text(x = 0.050, y = 0.20, "Current frequency", cex = my_text_size)
+      text(x = 0.050, y = 0.18, Threat3_topevent, cex = my_text_size)
+        }
+    
+}
+
+
+#######################################
 
 # Threat 1
 print("This is Threat 1")
@@ -431,8 +505,7 @@ message ("This is the current consequency lambda: ", (1+(1-postMitigateS))) # pu
 
 #################################################################################################################################
 #################################################################################################################################
-
-# Step 10: Repeat the above, but substitute in different demographic data for different herds
+# Step 10: Repeat the above, but substitute in different demographic data for different herds ----
 # In winder et al. 2019 we have repeated the above with two different herds:
 
 
@@ -457,7 +530,7 @@ sd1 <- 0.1 # ASSUMPTION # this value can go as high as 0.3, from the literature.
 ##################################################################################################################################
 
 ###################################################################################################################################
-# Other information:
+# Other information: ----
 ###################################################################################################################################
 # #################################################################################################################################
 # # Threat 1 initial Frequency calcultion laid out
