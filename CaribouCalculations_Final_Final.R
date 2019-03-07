@@ -347,6 +347,8 @@ message("This is the consequence lambda after mitigation: ", (1 + (1-postMitigat
 #################################################################################################################################
 # Step 9: Print the BRAT table, with values ----
 # this should be the same as Figure 2 in the manuscipt
+# run the below code (up to Step 9b) to make a crude output figure similar to the BRAT diagram
+# currently just for Threats and barriers. Future versions will involve the Hazzard, mitigation, and consequence values
 
 install.packages('diagram')
 library(diagram)
@@ -374,12 +376,7 @@ segmentarrow(from = pos[15, ], to = pos[20, ], dd = 0.45)
 
 # now draw boxes on top of the arrows
 my_labels<-c(1:20)
-#my_names_Threats<-strsplit("Threat 1, Threat 2, Threat 3, Threat 4", ",")
-#my_threats<-c(1, 9, 11, 15)
-Threat1<-c(1)
-Threat2<-c(9)
-Threat3<-c(11)
-Threat4<-c(15)
+my_threats<-c(1, 9, 11, 15)
 my_names_barriers<-c(1, 2, 3, 4, 5, 6, 7, 1, 1, 2, 3, 1, 2, 3, 4, 5)
 my_barriers<-c(2, 3, 4, 5, 6, 7, 8, 10, 12, 13, 14, 16, 17, 18, 19, 20)
 my_text_size = 0.9
@@ -392,35 +389,132 @@ for (i in 1:length(my_labels)) {
     textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = ("barrier"), cex = my_text_size, box.col = "white")
   }
 }
-
-# identify the threat boxes
+# identify the threat boxes, and add their values
 for(i in 1:length(my_labels)) {
-  if (i %in% Threat1){
+  if (i %in% my_labels[1]){
     textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length, lab = "Threat 1 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
       text(x = 0.0275, y = 0.71, Threat1_InitialFreq, cex = my_text_size)
       text(x = 0.0275, y = 0.69, "Current frequency", cex = my_text_size)
       text(x = 0.0275, y = 0.67, Threat1_topEvent, cex = my_text_size)
-    } else if (i %in% Threat2) {
+    } else if (i %in% my_labels[9]) {
     textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Threat 2 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
-      text(x = 0.230, y = 0.55, Threat2_InitialFreq, cex = my_text_size)
-      text(x = 0.230, y = 0.53, "Current frequency", cex = my_text_size)
-      text(x = 0.230, y = 0.51, Threat2_topevent, cex = my_text_size)
-      } else if (i %in% Threat3) {
+      text(x = 0.230, y = 0.51, Threat2_InitialFreq, cex = my_text_size)
+      text(x = 0.230, y = 0.49, "Current frequency", cex = my_text_size)
+      text(x = 0.230, y = 0.47, Threat2_topevent, cex = my_text_size)
+      } else if (i %in% my_labels[11]) {
     textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Threat 3 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
-      text(x = 0.095, y = 0.38, Threat3_InitialFreq, cex = my_text_size)
-      text(x = 0.095, y = 0.36, "Current frequency", cex = my_text_size)
-      text(x = 0.095, y = 0.34, Threat3_topevent, cex = my_text_size)
-      } else if (i %in% Threat4) {
+      text(x = 0.095, y = 0.32, Threat3_InitialFreq, cex = my_text_size)
+      text(x = 0.095, y = 0.30, "Current frequency", cex = my_text_size)
+      text(x = 0.095, y = 0.28, Threat3_topevent, cex = my_text_size)
+      } else if (i %in% my_labels[15]) {
     textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Threat 4 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
-      text(x = 0.050, y = 0.22, Threat3_InitialFreq, cex = my_text_size)
-      text(x = 0.050, y = 0.20, "Current frequency", cex = my_text_size)
-      text(x = 0.050, y = 0.18, Threat3_topevent, cex = my_text_size)
+      text(x = 0.050, y = 0.13, Threat3_InitialFreq, cex = my_text_size)
+      text(x = 0.050, y = 0.11, "Current frequency", cex = my_text_size)
+      text(x = 0.050, y = 0.09, Threat3_topevent, cex = my_text_size)
         }
     
 }
+# identify the barrier boxes, and add their values
+# remind myself of which position numbers represent barriers:
+# my_barriers<-c(2, 3, 4, 5, 6, 7, 8, 10, 12, 13, 14, 16, 17, 18, 19, 20)
+for(i in 1:length(my_labels)) {
+  #For threat 1
+  if (i %in% my_labels[2]){
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length, lab = "barrier 1 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barrier_1, cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][1], cex = my_text_size)
+  } else if (i %in% my_labels[3]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 2 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barriers[2], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][2], cex = my_text_size)
+  } else if (i %in% my_labels[4]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 3 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barriers[3], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][3], cex = my_text_size)
+  } else if (i %in% my_labels[5]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 4 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barriers[4], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][4], cex = my_text_size)
+  } else if (i %in% my_labels[6]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 5 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barriers[5], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][5], cex = my_text_size)
+  } else if (i %in% my_labels[7]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 6 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barriers[6], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][6], cex = my_text_size)
+  } else if (i %in% my_labels[8]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 7 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barriers[7], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][7], cex = my_text_size)
+  }
+  # For threat 2
+  else if (i %in% my_labels[10]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 1 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][9]-0.03, Threat2_barrier_1, cex = my_text_size)
+    text(x = pos[i], y = pos[,2][9]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][9]-0.07, Threat_LambdaEffect[[2]][1], cex = my_text_size)
+  }
+  # For threat 3
+  else if (i %in% my_labels[12]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 1 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][11]-0.03, Threat3_barriers[1], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][11]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][11]-0.07, Threat_LambdaEffect[[3]][1], cex = my_text_size)
+  } else if (i %in% my_labels[13]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 2 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][11]-0.03, Threat3_barriers[2], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][11]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][11]-0.07, Threat_LambdaEffect[[3]][2], cex = my_text_size)
+  } else if (i %in% my_labels[14]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 3 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][11]-0.03, Threat3_barriers[2], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][11]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][11]-0.07, Threat_LambdaEffect[[3]][3], cex = my_text_size)
+  }
+  # For threat 4
+  else if (i %in% my_labels[16]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 1 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][15]-0.03, Threat4_barriers[1], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.07, Threat_LambdaEffect[[4]][1], cex = my_text_size)
+  } else if (i %in% my_labels[17]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 2 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][15]-0.03, Threat4_barriers[2], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.07, Threat_LambdaEffect[[4]][2], cex = my_text_size)
+  } else if (i %in% my_labels[18]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 3 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][15]-0.03, Threat4_barriers[3], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.07, Threat_LambdaEffect[[4]][3], cex = my_text_size)
+  } else if (i %in% my_labels[19]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 4 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][15]-0.03, Threat4_barriers[4], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.07, Threat_LambdaEffect[[4]][4], cex = my_text_size)
+  } else if (i %in% my_labels[20]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 5 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][15]-0.03, Threat4_barriers[5], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.07, Threat_LambdaEffect[[4]][5], cex = my_text_size)
+  }
+}
+# make sure to Zoom on the plot to expand the figure enough to see all the numbers clearly
+############################################################################################
+
+# Hazard, mitigation, and consequence portion of the BRAT diagram
 
 
-#######################################
+#############################################################################################################################
+# Step 9b: Or you can just print out each value on its own
 
 # Threat 1
 print("This is Threat 1")
