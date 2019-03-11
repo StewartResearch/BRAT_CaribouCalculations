@@ -343,7 +343,7 @@ message("This is the consequence lambda: ", (1 + (1-postMitigateS)))
 #postMitigateS <- postMitigate(topEvent, mitigate(mitigate_cull, 1, 1)) # this is the wolfcull lever - acting solo
 #postMitigateS <- postMitigate(topEvent, mitigate(1, mitigate_penning, 1)) # this is the maternity pen lever - acting solo # 1.16
 #postMitigateS <- postMitigate(topEvent, mitigate(1, 1, mitigate_restoration)) # this is seismic lines - acting solo
-#postMitigateS <- postMitigate(topEvent, mitigate(1, mitigate_penning, mitigate_restoration)) # maternity penning and linear restoration
+postMitigateS <- postMitigate(topEvent, mitigate(1, mitigate_penning, mitigate_restoration)) # maternity penning and linear restoration
 
 message("This is the consequence lambda after mitigation: ", (1 + (1-postMitigateS)))
 
@@ -674,9 +674,7 @@ N = 360 # population of the Chinchaga herd as of 2008
 SadF = 0.94 # Adult female survival 
 recr = 0.072/2 # Juvenile female recruitment 
 sd1 <- 0.1 # ASSUMPTION # this value can go as high as 0.3, from the literature.
-#Also, set:
-#wolfCullPropOnAdults <- MortSadF*0.8
-#Threat1_InitialFreq <- 0.05549*0.9 # ASSUMPTION
+
 
 # and An "averaged" population
 # ASSUMPTION: No one herd demography is accurate for a study area. Instead, we quantify the BRAT analysis at the meta-region.
