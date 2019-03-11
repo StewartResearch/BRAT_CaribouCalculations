@@ -318,16 +318,19 @@ postMitigate <- function(topEvent, mitigate) {
   topEvent * mitigate
 }
 
-postMitigateS <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.950)) # combined mitigation/normal scenario
+mitigate_cull <- 0.814 # from Hervieux et al. Threat1_barrier1 rationale
+mitigate_restoration <- 1-(Threat_LambdaEffect[[1]][2] + (0.5*Threat_LambdaEffect[[1]][1])) # 100% of threat 1 barrier2 lambda (restoration), plut 50% of threat1_barrier1 (predation - which interacts with seismic lines)
+mitigate_penning <- 0.95 # from rough pers coms with Scott McNay
+postMitigateS <- postMitigate(topEvent, mitigate(mitigate_cull, mitigate_restoration, mitigate_penning)) # combined mitigation/normal scenario
 # values are from the literature, and can be changed # ASSUMTION/DATA
 message("This is the consequence frequency: ", postMitigateS)
 
 # Convert these inital frequency to values of lambda:
 
 Mitigation_LambdaEffect <- list()
-Mitigation_LambdaEffect[[1]] <- topEvent * (1 - 0.95) # linear restoration mitigation value, in Lambda units
-Mitigation_LambdaEffect[[2]] <- topEvent* (1 - 0.814) # wolf cull mitigation value, in Lambda units
-Mitigation_LambdaEffect[[3]] <- topEvent * (1 - 0.95) # maternal penning (exclosures) mitigation value, in Lambda units 
+Mitigation_LambdaEffect[[1]] <- topEvent * (1 - mitigate_restoration) # linear restoration mitigation value, in Lambda units
+Mitigation_LambdaEffect[[2]] <- topEvent* (1 - mitigate_cull) # wolf cull mitigation value, in Lambda units
+Mitigation_LambdaEffect[[3]] <- topEvent * (1 - mitigate_penning) # maternal penning (exclosures) mitigation value, in Lambda units 
 
 
 print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigateS))
@@ -337,10 +340,10 @@ message("This is the consequence lambda: ", (1 + (1-postMitigateS)))
 # Step 8b: look at different management scenarios by changing the alternate value to equal 1 (i.e. no effect)
 # un-comment below lines to look at these strategies, and how the postmitigate value changes
 
-#postMitigateS <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
-#postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
-#postMitigateS <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
-postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity penning and linear restoration
+#postMitigateS <- postMitigate(topEvent, mitigate(mitigate_cull, 1, 1)) # this is the wolfcull lever - acting solo
+#postMitigateS <- postMitigate(topEvent, mitigate(1, mitigate_penning, 1)) # this is the maternity pen lever - acting solo # 1.16
+#postMitigateS <- postMitigate(topEvent, mitigate(1, 1, mitigate_restoration)) # this is seismic lines - acting solo
+#postMitigateS <- postMitigate(topEvent, mitigate(1, mitigate_penning, mitigate_restoration)) # maternity penning and linear restoration
 
 message("This is the consequence lambda after mitigation: ", (1 + (1-postMitigateS)))
 
@@ -361,7 +364,7 @@ openplotmat()
 pos <- coordinates(c(8,2,4,6))
 pos # gives the position of these boxes
 class(pos)
-plot(pos, type = 'n', main = "BRAT diagram Threats and barriers", xlim = c(0, 1), ylim = c(0.1, 0.8), ylab = "", xlab = "")
+plot(pos, type = 'n', main = "BRAT diagram Threats and barriers", xlim = c(0, 1), ylim = c(0, 1), ylab = "", xlab = "")
 #text(pos)
 
 # add arrows and segments between positional numbers first
