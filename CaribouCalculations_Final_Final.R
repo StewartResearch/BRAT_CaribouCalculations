@@ -70,12 +70,16 @@ Threat4_multiplier = Threat3_multiplier # ASSUMPTION
 # Assumptions about caribou population demongraphics, from published literaure, reports, and pers. comms:
 # These values are used to calculate the current top event frequency, for juveniles
 # pregnancy rate
-pregR <- 0.9 # DATA/ASSUMPTION # pregnancy rate - from observations in maternal pens 
+pregR <- 0.9 # DATA/ASSUMPTION # pregnancy rate - from observations in maternal pens. 
 # (Scott McNay pers com, Kinse-Za maternal penning project)
+# also similar to observations in northeastern alberta (McLoughlin et al. 2003; obtained from serum collected during capture)
 # juvenile survival to the fist day of life
+
 sexRatio<- 0.5 # only half of the animals born will be female 
 surv1stDay <- 0.8 * sexRatio # DATA/ASSUMPTION # juvenile female survival to the first day - from maternal pen observations 
 # (Scott McNay pers com, Klinse-Za maternal penning project)
+# also similar to observations in northeastern alberta (McLoughlin et al. 2003)
+
 mort1stDay <- 1 - (surv1stDay)  
 
 ###########################################################################################################
@@ -411,9 +415,9 @@ for(i in 1:length(my_labels)) {
       text(x = 0.095, y = 0.28, Threat3_topevent, cex = my_text_size)
       } else if (i %in% my_labels[15]) {
     textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Threat 4 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
-      text(x = 0.050, y = 0.13, Threat3_InitialFreq, cex = my_text_size)
+      text(x = 0.050, y = 0.13, Threat4_InitialFreq, cex = my_text_size)
       text(x = 0.050, y = 0.11, "Current frequency", cex = my_text_size)
-      text(x = 0.050, y = 0.09, Threat3_topevent, cex = my_text_size)
+      text(x = 0.050, y = 0.09, Threat4_topevent, cex = my_text_size)
         }
 }
 # identify the barrier boxes, and add their values
