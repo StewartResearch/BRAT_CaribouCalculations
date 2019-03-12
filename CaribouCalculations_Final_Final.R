@@ -20,7 +20,7 @@
 
 ###########################
 ###########################
-# Chinchaga herd (STUDY AREA 1) - DONE ---- 
+# Chinchaga herd (STUDY AREA 1) ----
 ###########################
 
 #########
@@ -31,7 +31,7 @@ Threat3_barriers <- c(1.00, 1.00, 1.00) # in units of Initial Frequency
 Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.00)
 
 ###############################################################################
-# Step 1: know (or estimate) some basic information about each study area/herd. 
+# Step 1: know (or estimate) some basic information about each study area/herd. ----
 ### average demographic values between snake and Chinchaga as of 2008 - from downloadable csv online:
 # source: https://open.canada.ca/data/en/dataset/4eb3e825-5b0f-45a3-8b8b-355188d24b71
 
@@ -51,7 +51,7 @@ Mortrecr = (1 - recr) # part of this will go into the Initial frequency of the t
 
 
 ################################
-# Step 2: State your assumptions
+# Step 2: State your assumptions ----
 ### In this example, there are 4 threats. 
 ### Three of these threats apply to adult females, and three of these threats apply to juveniles
 ### One threat each applies to only adult females and juveniles
@@ -70,16 +70,20 @@ Threat4_multiplier = Threat3_multiplier # ASSUMPTION
 # Assumptions about caribou population demongraphics, from published literaure, reports, and pers. comms:
 # These values are used to calculate the current top event frequency, for juveniles
 # pregnancy rate
-pregR <- 0.9 # DATA/ASSUMPTION # pregnancy rate - from observations in maternal pens 
+pregR <- 0.9 # DATA/ASSUMPTION # pregnancy rate - from observations in maternal pens. 
 # (Scott McNay pers com, Kinse-Za maternal penning project)
+# also similar to observations in northeastern alberta (McLoughlin et al. 2003; obtained from serum collected during capture)
 # juvenile survival to the fist day of life
+
 sexRatio<- 0.5 # only half of the animals born will be female 
 surv1stDay <- 0.8 * sexRatio # DATA/ASSUMPTION # juvenile female survival to the first day - from maternal pen observations 
 # (Scott McNay pers com, Klinse-Za maternal penning project)
+# also similar to observations in northeastern alberta (McLoughlin et al. 2003)
+
 mort1stDay <- 1 - (surv1stDay)  
 
 ###########################################################################################################
-# Step 3: calculate a normal distribution, and indicate the 60% value
+# Step 3: calculate a normal distribution, and indicate the 60% value ----
 ### This 60% value comes from Environment and Climate Change Canada's 2012 boreal caribou recovery strategy
 ### indicating the threshold of 35% landscape disturbance = 60% survival probability of herd persistence. 
 ### In other words, we are OK with 40% of the herds dissapearing, on average.
@@ -94,7 +98,7 @@ print(lambdaQuartile)
 # 1.02
 
 ##################################################################################
-# Step 4:populating the BRAT framework Initial frequency and Current top events of threats
+# Step 4:populating the BRAT framework Initial frequency and Current top events of threats ----
 # Step 4 thorugh 6 are summarized in Table 2 of the manuscript (Winder et al. 2019)
 
 # Determining what vlaues should go into the Initial Frequency of a Threat (Blue boxes), and what values should 
@@ -199,7 +203,7 @@ Threat4_topevent <- Threat4_multiplier + (0.5 * Difference_nonpredation) # DATA/
 Threat4_InitialFreq <- Threat4_topevent/(prod(Threat4_barriers))
 
 #######################################################
-# step 5: Convert the inital frequency values to values of lambda:
+# step 5: Convert the inital frequency values to values of lambda ----
 
 Threat_LambdaEffect <- list()
 Threat_LambdaEffect[[1]] <- (Threat1_InitialFreq * sapply(Threat1_barriers, eval)) - Threat1_InitialFreq # in Lambda units
@@ -276,7 +280,7 @@ sapply(Threat1_barriers, eval)[[1]] # :)
 #Threat2_LambdaEffect = wolvesOnAdults + otherOnJuvs # check
 
 ########################
-# Step 6: Calculate the Current Total Top Event and Current Consequency (i.e. Mitigate) vlaues
+# Step 6: Calculate the Current Total Top Event and Current Consequency (i.e. Mitigate) values ----
 # these values can be changed to better reflect data as it becomes available:
 ### the first number of each function is the probability that the threat affects the citical event (lambda below zero)
 ### the subsequent numbers of each function are the probability that the barrers will FAIL to prevent the threat
@@ -294,7 +298,7 @@ mitigate <- function(cull, pens, rs){
 }
 
 #######################################################
-# step 7: sum the current events to get the total top event frequency
+# step 7: sum the current events to get the total top event frequency ----
 # Summarized in Table 2 of the manuscript (Winder et al. 2019)
 
 threatCalculator <- function(init, barriers) {
@@ -313,21 +317,24 @@ message("This is the top event lambda: ", round(((1 - topEvent) + 1), 3))
 print(TopEvent_lambda <- lambdaQuartile < 1 + (1-topEvent))
 
 ##################################################################################################
-# step 8: what about after mitigation?
+# step 8: what about after mitigation? ----
 postMitigate <- function(topEvent, mitigate) {
   topEvent * mitigate
 }
 
-postMitigateS <- postMitigate(topEvent, mitigate(0.814, 0.950, 0.950)) # combined mitigation/normal scenario
+mitigate_cull <- 0.814 # from Hervieux et al. Threat1_barrier1 rationale
+mitigate_restoration <- 1-(Threat_LambdaEffect[[1]][2] + (0.5*Threat_LambdaEffect[[1]][1])) # 100% of threat 1 barrier2 lambda (restoration), plut 50% of threat1_barrier1 (predation - which interacts with seismic lines)
+mitigate_penning <- 0.95 # from rough pers coms with Scott McNay
+postMitigateS <- postMitigate(topEvent, mitigate(mitigate_cull, mitigate_restoration, mitigate_penning)) # combined mitigation/normal scenario
 # values are from the literature, and can be changed # ASSUMTION/DATA
 message("This is the consequence frequency: ", postMitigateS)
 
 # Convert these inital frequency to values of lambda:
 
 Mitigation_LambdaEffect <- list()
-Mitigation_LambdaEffect[[1]] <- topEvent * (1 - 0.95) # linear restoration mitigation value, in Lambda units
-Mitigation_LambdaEffect[[2]] <- topEvent* (1 - 0.814) # wolf cull mitigation value, in Lambda units
-Mitigation_LambdaEffect[[3]] <- topEvent * (1 - 0.95) # maternal penning (exclosures) mitigation value, in Lambda units 
+Mitigation_LambdaEffect[[1]] <- topEvent * (1 - mitigate_restoration) # linear restoration mitigation value, in Lambda units
+Mitigation_LambdaEffect[[2]] <- topEvent* (1 - mitigate_cull) # wolf cull mitigation value, in Lambda units
+Mitigation_LambdaEffect[[3]] <- topEvent * (1 - mitigate_penning) # maternal penning (exclosures) mitigation value, in Lambda units 
 
 
 print(PostMitigate_lambda <- 1 + (1-topEvent) < 1 + (1-postMitigateS))
@@ -337,16 +344,247 @@ message("This is the consequence lambda: ", (1 + (1-postMitigateS)))
 # Step 8b: look at different management scenarios by changing the alternate value to equal 1 (i.e. no effect)
 # un-comment below lines to look at these strategies, and how the postmitigate value changes
 
-#postMitigateS <- postMitigate(topEvent, mitigate(0.814, 1, 1)) # this is the wolfcull lever - acting solo
-#postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 1)) # this is the maternity pen lever - acting solo # 1.16
-#postMitigateS <- postMitigate(topEvent, mitigate(1, 1, 0.95)) # this is seismic lines - acting solo
-postMitigateS <- postMitigate(topEvent, mitigate(1, 0.95, 0.95)) # maternity penning and linear restoration
+#postMitigateS <- postMitigate(topEvent, mitigate(mitigate_cull, 1, 1)) # this is the wolfcull lever - acting solo
+#postMitigateS <- postMitigate(topEvent, mitigate(1, mitigate_penning, 1)) # this is the maternity pen lever - acting solo # 1.16
+#postMitigateS <- postMitigate(topEvent, mitigate(1, 1, mitigate_restoration)) # this is seismic lines - acting solo
+postMitigateS <- postMitigate(topEvent, mitigate(1, mitigate_penning, mitigate_restoration)) # maternity penning and linear restoration
 
 message("This is the consequence lambda after mitigation: ", (1 + (1-postMitigateS)))
 
 #################################################################################################################################
-# Step 9: Print the BRAT table, with values
+# Step 9: Print the BRAT table, with values ----
 # this should be the same as Figure 2 in the manuscipt
+# run the below code (up to Step 9b) to make a crude output figure similar to the BRAT diagram
+# currently just for Threats and barriers. Future versions will involve the Hazzard, mitigation, and consequence values
+
+install.packages('diagram')
+library(diagram)
+
+# creates an empty plot
+openplotmat()
+
+# create the coordinates
+# I want the boxes arranged in a 8, 2, 4, 6 formation (for Threat names/initial/top values, and one for each barrier)
+pos <- coordinates(c(8,2,4,6))
+pos # gives the position of these boxes
+class(pos)
+plot(pos, type = 'n', main = "BRAT diagram Threats and barriers", xlim = c(0, 1), ylim = c(0, 1), ylab = "", xlab = "")
+#text(pos)
+
+# add arrows and segments between positional numbers first
+# Threat1
+segmentarrow(from = pos[1,], to = pos[8,], dd = 0.45)
+# Threat2
+segmentarrow(from = pos[9, ], to = pos[10, ], dd = 0.45)
+#Threat3
+segmentarrow(from = pos[11, ], to = pos[14, ], dd = 0.45)
+#Threat3
+segmentarrow(from = pos[15, ], to = pos[20, ], dd = 0.45)
+
+# now draw boxes on top of the arrows
+my_labels<-c(1:20)
+my_threats<-c(1, 9, 11, 15)
+my_names_barriers<-c(1, 2, 3, 4, 5, 6, 7, 1, 1, 2, 3, 1, 2, 3, 4, 5)
+my_barriers<-c(2, 3, 4, 5, 6, 7, 8, 10, 12, 13, 14, 16, 17, 18, 19, 20)
+my_text_size = 0.9
+my_edge_length <- 0.05
+
+
+# identify the barrier boxes
+for (i in 1:length(my_labels)) {
+  if (i %in% 1:length(my_barriers)) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = ("barrier"), cex = my_text_size, box.col = "white")
+  }
+}
+# identify the threat boxes, and add their values
+for(i in 1:length(my_labels)) {
+  if (i %in% my_labels[1]){
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length, lab = "Threat 1 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
+      text(x = 0.0275, y = 0.71, Threat1_InitialFreq, cex = my_text_size)
+      text(x = 0.0275, y = 0.69, "Current frequency", cex = my_text_size)
+      text(x = 0.0275, y = 0.67, Threat1_topEvent, cex = my_text_size)
+    } else if (i %in% my_labels[9]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Threat 2 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
+      text(x = 0.230, y = 0.51, Threat2_InitialFreq, cex = my_text_size)
+      text(x = 0.230, y = 0.49, "Current frequency", cex = my_text_size)
+      text(x = 0.230, y = 0.47, Threat2_topevent, cex = my_text_size)
+      } else if (i %in% my_labels[11]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Threat 3 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
+      text(x = 0.095, y = 0.32, Threat3_InitialFreq, cex = my_text_size)
+      text(x = 0.095, y = 0.30, "Current frequency", cex = my_text_size)
+      text(x = 0.095, y = 0.28, Threat3_topevent, cex = my_text_size)
+      } else if (i %in% my_labels[15]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Threat 4 \n Initial Frequency", cex = my_text_size, box.col = "#0072B2")
+      text(x = 0.050, y = 0.13, Threat4_InitialFreq, cex = my_text_size)
+      text(x = 0.050, y = 0.11, "Current frequency", cex = my_text_size)
+      text(x = 0.050, y = 0.09, Threat4_topevent, cex = my_text_size)
+        }
+}
+# identify the barrier boxes, and add their values
+# remind myself of which position numbers represent barriers:
+# my_barriers<-c(2, 3, 4, 5, 6, 7, 8, 10, 12, 13, 14, 16, 17, 18, 19, 20)
+for(i in 1:length(my_labels)) {
+  #For threat 1
+  if (i %in% my_labels[2]){
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length, lab = "barrier 1 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barrier_1, cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][1], cex = my_text_size)
+  } else if (i %in% my_labels[3]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 2 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barriers[2], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][2], cex = my_text_size)
+  } else if (i %in% my_labels[4]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 3 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barriers[3], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][3], cex = my_text_size)
+  } else if (i %in% my_labels[5]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 4 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barriers[4], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][4], cex = my_text_size)
+  } else if (i %in% my_labels[6]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 5 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barriers[5], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][5], cex = my_text_size)
+  } else if (i %in% my_labels[7]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 6 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barriers[6], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][6], cex = my_text_size)
+  } else if (i %in% my_labels[8]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 7 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, Threat1_barriers[7], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Threat_LambdaEffect[[1]][7], cex = my_text_size)
+  }
+  # For threat 2
+  else if (i %in% my_labels[10]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 1 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][9]-0.03, Threat2_barrier_1, cex = my_text_size)
+    text(x = pos[i], y = pos[,2][9]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][9]-0.07, Threat_LambdaEffect[[2]][1], cex = my_text_size)
+  }
+  # For threat 3
+  else if (i %in% my_labels[12]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 1 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][11]-0.03, Threat3_barriers[1], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][11]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][11]-0.07, Threat_LambdaEffect[[3]][1], cex = my_text_size)
+  } else if (i %in% my_labels[13]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 2 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][11]-0.03, Threat3_barriers[2], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][11]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][11]-0.07, Threat_LambdaEffect[[3]][2], cex = my_text_size)
+  } else if (i %in% my_labels[14]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 3 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][11]-0.03, Threat3_barriers[2], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][11]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][11]-0.07, Threat_LambdaEffect[[3]][3], cex = my_text_size)
+  }
+  # For threat 4
+  else if (i %in% my_labels[16]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 1 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][15]-0.03, Threat4_barriers[1], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.07, Threat_LambdaEffect[[4]][1], cex = my_text_size)
+  } else if (i %in% my_labels[17]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 2 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][15]-0.03, Threat4_barriers[2], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.07, Threat_LambdaEffect[[4]][2], cex = my_text_size)
+  } else if (i %in% my_labels[18]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 3 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][15]-0.03, Threat4_barriers[3], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.07, Threat_LambdaEffect[[4]][3], cex = my_text_size)
+  } else if (i %in% my_labels[19]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 4 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][15]-0.03, Threat4_barriers[4], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.07, Threat_LambdaEffect[[4]][4], cex = my_text_size)
+  } else if (i %in% my_labels[20]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "barrier 5 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][15]-0.03, Threat4_barriers[5], cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.05, "lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][15]-0.07, Threat_LambdaEffect[[4]][5], cex = my_text_size)
+  }
+}
+# make sure to Zoom on the plot to expand the figure enough to see all the numbers clearly
+############################################################################################
+
+# Hazard, mitigation, and consequence portion of the BRAT diagram
+
+# creates an empty plot
+openplotmat()
+# create the coordinates
+# I want 5 boxes (1 hazzard, 3 mitigations, 1 consequence) all on the same line
+pos <- coordinates(c(5))
+pos # gives the position of these boxes
+class(pos)
+plot(pos, type = 'n', main = "BRAT diagram hazzard, mitigation, and consequence", xlim = c(0, 1), ylim = c(0.1, 0.8), ylab = "", xlab = "")
+#text(pos)
+# add arrows and segments between positional numbers first
+# Main line
+segmentarrow(from = pos[1,], to = pos[5,], dd = 0.45)
+# now draw boxes on top of the arrows
+my_labels<-c(1:5)
+my_hazzard<-c(1)
+my_mitigation<-c(2, 3, 4)
+my_consequence<-c(5)
+my_text_size = 0.9
+my_edge_length <- 0.05
+# identify the Hazzard box
+for(i in 1:length(my_labels)) {
+  if (i %in% my_labels[1]){
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length, lab = "HAZZARD \n Target Frequency", cex = my_text_size, box.col = "red")
+    text(x = pos[i], y = pos[,2][1]-0.03, (1+(1-lambdaQuartile)), cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "Target lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, lambdaQuartile, cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.09, "Current Total top event frequency: ", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.11,  topEvent, cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.13, "Current Total top event lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.15, (1+(1-topEvent)), cex = my_text_size)
+  } 
+  }
+# identify the mitigation boxes
+for(i in 1:length(my_labels)) {
+  if (i %in% my_labels[2]){
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length, lab = "Mitigation 1 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, "0.95", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "Mitigation lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Mitigation_LambdaEffect[[1]], cex = my_text_size)
+  } else if (i %in% my_labels[3]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Mitigation 2 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, "0.814", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "Mitigation lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Mitigation_LambdaEffect[[2]], cex = my_text_size)
+  } else if (i %in% my_labels[4]) {
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length,lab = "Mitigation 3 \n Frequency", cex = my_text_size, box.col = "white")
+    text(x = pos[i], y = pos[,2][1]-0.03, "0.95", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "Mitigation lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, Mitigation_LambdaEffect[[3]], cex = my_text_size)
+  }
+}
+# identify the consequence boxes
+for(i in 1:length(my_labels)) {
+  if (i %in% my_labels[5]){
+    textrect(mid = pos[i,], radx = my_edge_length, rady = my_edge_length, lab = "CONSEQUENCE \n  target frequency", cex = my_text_size, box.col = "green")
+    text(x = pos[i], y = pos[,2][1]-0.03, (1+(1-lambdaQuartile)), cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.05, "Consequence target lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.07, lambdaQuartile, cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.09, "Current consequence frequency: ", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.11,  postMitigateS, cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.13, "current consequence top event lambda", cex = my_text_size)
+    text(x = pos[i], y = pos[,2][1]-0.15, (1+(1-postMitigateS)), cex = my_text_size)
+  } 
+}
+# make sure to Zoom on the plot to expand the figure enough to see all the numbers clearly
+#############################################################################################################################
+# Step 9b: Or you can just print out each value on its own
 
 # Threat 1
 print("This is Threat 1")
@@ -431,8 +669,7 @@ message ("This is the current consequency lambda: ", (1+(1-postMitigateS))) # pu
 
 #################################################################################################################################
 #################################################################################################################################
-
-# Step 10: Repeat the above, but substitute in different demographic data for different herds
+# Step 10: Repeat the above, but substitute in different demographic data for different herds ----
 # In winder et al. 2019 we have repeated the above with two different herds:
 
 
@@ -441,9 +678,7 @@ N = 360 # population of the Chinchaga herd as of 2008
 SadF = 0.94 # Adult female survival 
 recr = 0.072/2 # Juvenile female recruitment 
 sd1 <- 0.1 # ASSUMPTION # this value can go as high as 0.3, from the literature.
-#Also, set:
-#wolfCullPropOnAdults <- MortSadF*0.8
-#Threat1_InitialFreq <- 0.05549*0.9 # ASSUMPTION
+
 
 # and An "averaged" population
 # ASSUMPTION: No one herd demography is accurate for a study area. Instead, we quantify the BRAT analysis at the meta-region.
@@ -457,7 +692,7 @@ sd1 <- 0.1 # ASSUMPTION # this value can go as high as 0.3, from the literature.
 ##################################################################################################################################
 
 ###################################################################################################################################
-# Other information:
+# Other information: ----
 ###################################################################################################################################
 # #################################################################################################################################
 # # Threat 1 initial Frequency calcultion laid out
