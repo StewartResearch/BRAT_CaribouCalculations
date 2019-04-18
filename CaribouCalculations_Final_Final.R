@@ -1,9 +1,12 @@
 #################################################################################
 # Caribou calculations
 # for BRAT paper: Winder et al. in prep at Frontiers in Ecology and Evolution
-# February 2019
+# Started: January 2019
+# Last revised: April 18, 2019
 # By Eliot McIntire and Frances Stewart
 #################################################################################
+
+# TODO: double check all code and comments
 
 # Objectives: ----
 ### Calculate target frequency for the critical event
@@ -347,7 +350,7 @@ message("This is the consequence lambda: ", (1 + (1-postMitigateS)))
 #postMitigateS <- postMitigate(topEvent, mitigate(mitigate_cull, 1, 1)) # this is the wolfcull lever - acting solo
 #postMitigateS <- postMitigate(topEvent, mitigate(1, mitigate_penning, 1)) # this is the maternity pen lever - acting solo # 1.16
 #postMitigateS <- postMitigate(topEvent, mitigate(1, 1, mitigate_restoration)) # this is seismic lines - acting solo
-postMitigateS <- postMitigate(topEvent, mitigate(1, mitigate_penning, mitigate_restoration)) # maternity penning and linear restoration
+#postMitigateS <- postMitigate(topEvent, mitigate(1, mitigate_penning, mitigate_restoration)) # maternity penning and linear restoration
 
 message("This is the consequence lambda after mitigation: ", (1 + (1-postMitigateS)))
 
@@ -362,6 +365,8 @@ library(diagram)
 
 # creates an empty plot
 openplotmat()
+
+# TODO: make this into a PDF that gets printed.
 
 # create the coordinates
 # I want the boxes arranged in a 8, 2, 4, 6 formation (for Threat names/initial/top values, and one for each barrier)
