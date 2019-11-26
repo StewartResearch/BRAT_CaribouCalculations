@@ -26,6 +26,15 @@
 
 source("CaribouCalculations_Final_Final.R")
 
-optim(Threat1_InitialFreq, fn = topEvent_Lambda, method = "L-BFGS-B", lower = (topEvent_Lambda - 0.05), upper = (topEvent_Lambda + 0.05))
+#Calculate the optimazation on LOPA factor values, for each threat line
+initialFreq<-as.vector(c(Threat1_InitialFreq, Threat2_InitialFreq, Threat3_InitialFreq, Threat4_InitialFreq))
+barriers<-as.vector(c(sapply(Threat1_barriers, eval), Threat2_barriers, Threat3_barriers, Threat4_barriers))
 
+optim(par = initialFreq, fn =  threatCalculator(initialFreq,barriers), method = "L-BFGS-B", lower = (topEvent - 0.05), upper = (topEvent + 0.05))
+
+
+
+
+# now translate this into lambda values
+# optim_lambdaUpper <-round(((1 - optim) + 1), 3)
       
