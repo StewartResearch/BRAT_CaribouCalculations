@@ -24,6 +24,8 @@
 # Answer a question: By how much would each threat line need to change in order to either increase or decrease the Current
 # Total Top Event Lambda by 5%?
 
-source(CaribouCalculations_Final_Final.R)
+source("CaribouCalculations_Final_Final.R")
 
-optim(Threat1_barriers, topEvent_Lambda)
+optim(Threat1_InitialFreq, fn = topEvent_Lambda, method = "L-BFGS-B", lower = (topEvent_Lambda - 0.05), upper = (topEvent_Lambda + 0.05))
+
+      
