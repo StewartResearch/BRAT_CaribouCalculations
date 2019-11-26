@@ -2,7 +2,7 @@
 # Caribou calculations
 # for BRAT paper: Winder et al. in prep at Frontiers in Ecology and Evolution
 # Started: January 2019
-# Last revised: April 18, 2019
+# Last revised: November 26, 2019
 # authors: Eliot McIntire and Frances Stewart
 #################################################################################
 
@@ -11,14 +11,14 @@
 ##### Policy says the target frequency should be 40% (Environment and Climate Change Canada 2012 Recovery Strategy) 
 ## - ECCC has indicated landscape change should not exceed 35%, as this produces a 60% probability of herd persistence. 
 ## In other words, this policy threshold is stated at 40% risk of population decline for any specific population.
-#But this 40% is obtained from a normal distribution 
-## - i.e. it is the area under a normalized curve (bc the models in ECCC2012 assume a normal distribution)
+# But this 40% is obtained from a normal distribution 
+## - i.e. it is the area under a normalized curve (because the models in ECCC2012 assume a normal distribution)
 ## representing the lower 40% of the distribution.
 
 ## Overall, we want to determine if a herd is above the 40% threshold (ie in the 60% probability of survival category)
 ## We therefore set 60% as our target threshold to achieve.
 
-## Through out, assumptions are stated as "ASSUMPTION". Search for this word too see them all.
+## Through out this script, assumptions are stated as "ASSUMPTION". Search for this word too see them all.
 
 
 ###########################
