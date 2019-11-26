@@ -32,7 +32,7 @@
 Threat1_barriers <- c(quote(Threat1_barrier_1), 1.4, 0.65, 1.5, 1.0, 0.9, 1.0) # in units of Initial Frequency
 Threat2_barriers <- quote(c(Threat2_barrier_1)) # in units of Initial Frequency # This is derived from data below
 Threat3_barriers <- c(1.00, 1.00, 1.00) # in units of Initial Frequency
-Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.00)
+Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.0)
 
 ###############################################################################
 # Step 1: know (or estimate) some basic information about each study area/herd. ----
@@ -308,7 +308,8 @@ threatCalculator <- function(init, barriers) {
                                 threatCalculator(Threat3_InitialFreq, Threat3_barriers), 
                                 threatCalculator(Threat4_InitialFreq, Threat4_barriers)))
 # in other words, the sum of the Threat_topevents - which meets the LOPA users manual instructions
-message("This is the top event lambda: ", round(((1 - topEvent) + 1), 3)) 
+topEvent_Lambda <-round(((1 - topEvent) + 1), 3)
+message("This is the top event lambda: ", topEvent_Lambda) 
 
 # does the top event exceed the lambda quartile?
 print(TopEvent_lambda <- lambdaQuartile < 1 + (1-topEvent))
