@@ -36,7 +36,7 @@ Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.00)
 
 ###############################################################################
 # Step 1: know (or estimate) some basic information about each study area/herd. ----
-### average demographic values between snake and Chinchaga as of 2008 - from downloadable csv online:
+### average demographic values from Snake and Chinchaga as of 2008 - from downloadable csv online:
 # source: https://open.canada.ca/data/en/dataset/4eb3e825-5b0f-45a3-8b8b-355188d24b71
 
 # Chinchaga
@@ -99,7 +99,7 @@ lambdaQuartile <- qnorm(0.6, mean = 1, sd1) # mortality quartile is at the 60% m
 ### This is the frequency we need to try and aim above, to prevent lambda being consistently below 1, given a population sd of 0.1
 # in this case it is:
 print(lambdaQuartile) 
-# 1.02
+# 1.025
 
 ##################################################################################
 # Step 4:populating the BRAT framework Initial frequency and Current top events of threats ----
@@ -214,11 +214,11 @@ wolfCullEffect <- 0.186 # DATA/ASSUMPTION
 # i.e. lambda has the potential to increase by 18.6% during a full wolf cull.
 # Hervieux et al. (2014) found lambda increased between 4.6 (within herds) and 14% (between herds) during a 50% wolf cull. 
 # We avereaged these fundings, and standardized by 50% wolf cull to get the 18.6%
-# this assumes a linear relationship # ASSUMPTION #
+# this assumes a linear relationship with no threshold effects # ASSUMPTION #
 
 #############################################################################################################################
 # Step 5b
-# we now wanted to stplit this up between the effect of predation by wolves, and the effect of predation as a compensatory effect 
+# we now wanted to split this up between the effect of predation by wolves, and the effect of predation as a compensatory effect 
 # (or "other" predators, OR wolves that are not being culled)
 # i.e. this could include wolf immigration and source/sink dynamics -> an important discussion point.
 
@@ -275,8 +275,8 @@ Threat1_barrier_1 <- (a - 1)  + (d - 1)  + 1 # in initial units
 # should be the same as equal:
 sapply(Threat1_barriers, eval)[[1]] # :)
 # also, lambda values should equal
-#Threat1_LambdaEffect = wolvesOnAdults + otherOnAdults # check
-#Threat2_LambdaEffect = wolvesOnAdults + otherOnJuvs # check
+#Threat1_LambdaEffect = wolvesOnAdults + otherOnAdults # check point if desired
+#Threat2_LambdaEffect = wolvesOnAdults + otherOnJuvs # check point if desired
 
 ########################
 # Step 6: Calculate the Current Total Top Event and Current Consequency (i.e. Mitigate) values ----
@@ -687,6 +687,11 @@ SadF = (0.94 + 0.87)/2 # Adult female survival
 recr = ((0.072 + 0.139)/2)/2 # Juvenile female recruitment 
 sd1 <- 0.1 # ASSUMPTION # this value can go as high as 0.3, from the literature.
 
+# NOVEMBER 26, 2019 UPDATE
+# Currently no Maxhamish herd demographic data, but we are working on getting these from FLNRORD
+# it would also be great to get updated demographic data from all herds if available - the data used in this manuscript to date are
+## 10 year averaged values from 2008 (i.e. collected between 1998-2008)
+
 ##################################################################################################################################
 # the results of this work is summarized in Tables 1 and 2 of the current BRAT manuscript (Winder et al. 2019)
 ##################################################################################################################################
@@ -694,7 +699,7 @@ sd1 <- 0.1 # ASSUMPTION # this value can go as high as 0.3, from the literature.
 
 
 ###################################################################################################################################
-# Other information: ----
+# Other information from previous iterations: ----
 ###################################################################################################################################
 # #################################################################################################################################
 # # Threat 1 initial Frequency calcultion laid out
