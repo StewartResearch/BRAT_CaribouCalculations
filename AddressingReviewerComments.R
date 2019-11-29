@@ -63,7 +63,7 @@ BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.45, pregR = 0.9
 
 
 ## vary pregR ##
-BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9,pregR = 1.0, sexRatio = 0.5, 
+BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9, pregR = 1.0, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 # [1] 1.025335
 # This is the top event lambda: 0.935
@@ -87,7 +87,17 @@ BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9,pregR = 0.9,
 # [1] FALSE
 
 
-
+## vary WolfCullPropOnAdults
+BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9,pregR = 0.9, sexRatio = 0.5, 
+     wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.15)
+# [1] 1.025335
+# This is the top event lambda: 0.935
+# [1] FALSE
+BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9,pregR = 0.9, sexRatio = 0.5, 
+     wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.05)
+# [1] 1.025335
+# This is the top event lambda: 0.935
+# [1] FALSE
 
 
 # Response
