@@ -27,8 +27,8 @@
 ## wolfCullEffect - this is from Hervieux et al 2014 and could change with more information <- 0.186
 ## wolfCullPropOnAdults - we assumed that the majority of a wolf cull evect ws on juveniles <- 0.1
 
-#default BRAT
-BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9,pregR = 0.9, sexRatio = 0.5, 
+#default BRAT ----
+BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, WolfTrapping = 0.65, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 # [1] 1.025335 # This is the lambda Quatile
 # This is the top event lambda: 0.935
@@ -99,6 +99,14 @@ BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9,pregR = 0.9,
 # This is the top event lambda: 0.935
 # [1] FALSE
 
+## vary WolfTrapping
+#Threat1_InitialFreq<- Threat1_topEvent/prod(sapply(Threat1_barriers, eval))
+# normal scenario
+Threat1_InitialFreq<- 0.117/prod(1.716,1.4,0.65,1.5,1.0,0.9,1.0)
+# our scenario
+Threat1_InitialFreq<- 0.117/prod(1.716,1.4,0.975,1.5,1.0,0.9,1.0)
+BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, Threat1_InitialFreq = 0.0370, WolfTrapping = 0.65, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
+     wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 
 # Response
 # Answer a question: By how much would each threat line need to change in order to either increase or decrease the Current
