@@ -154,10 +154,10 @@ BRAT<-function(N, SadF, recr, sd1,  multiplier1, pregR, sexRatio, wolfCullEffect
 #  ### This might be a big assumption! But it is mitigated by the above IF statement.
 #   ###### See how we calculated this at the end of the script ('Other Information').
 # }
-
+env <- environment()
     Threat1_barrier_1 <-  Threat1_multiplier / (Threat1_InitialFreq * prod(unlist(Threat1_barriers[-1])))
     Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
-    Threat1_InitialFreq <- Threat1_topEvent/prod(sapply(Threat1_barriers, eval))
+    Threat1_InitialFreq <- Threat1_topEvent/prod(sapply(Threat1_barriers, eval, envir = env))
   
   # Threat 2 - Juvenile predation
   ### Initial Frequency
@@ -213,7 +213,7 @@ BRAT<-function(N, SadF, recr, sd1,  multiplier1, pregR, sexRatio, wolfCullEffect
   # step 5: Convert the inital frequency values to values of lambda ----
   
   Threat_LambdaEffect <- list()
-  Threat_LambdaEffect[[1]] <- (Threat1_InitialFreq * sapply(Threat1_barriers, eval)) - Threat1_InitialFreq # in Lambda units
+  Threat_LambdaEffect[[1]] <- (Threat1_InitialFreq * sapply(Threat1_barriers, eval, envir = env)) - Threat1_InitialFreq # in Lambda units
   Threat_LambdaEffect[[2]] <- Threat2_InitialFreq * Threat2_barriers - Threat2_InitialFreq # in Lambda units
   Threat_LambdaEffect[[3]] <- Threat3_InitialFreq * Threat3_barriers - Threat3_InitialFreq # in Lambda units
   Threat_LambdaEffect[[4]] <- Threat4_InitialFreq * Threat4_barriers - Threat4_InitialFreq # in Lambda units
@@ -281,7 +281,7 @@ BRAT<-function(N, SadF, recr, sd1,  multiplier1, pregR, sexRatio, wolfCullEffect
   #  of "the predation effect", which is PropMortDay30ToSurvey_predation
   
   # should be the same as equal:
-  sapply(Threat1_barriers, eval)[[1]] # :)
+  sapply(Threat1_barriers, eval, envir = env)[[1]] # :)
   # also, lambda values should equal
   #Threat1_LambdaEffect = wolvesOnAdults + otherOnAdults # check point if desired
   #Threat2_LambdaEffect = wolvesOnAdults + otherOnJuvs # check point if desired
@@ -311,7 +311,7 @@ BRAT<-function(N, SadF, recr, sd1,  multiplier1, pregR, sexRatio, wolfCullEffect
   }
   
   
-  (topEvent <- topEventCalculator(threatCalculator(Threat1_InitialFreq, sapply(Threat1_barriers, eval)), 
+  (topEvent <- topEventCalculator(threatCalculator(Threat1_InitialFreq, sapply(Threat1_barriers, eval, envir = env)), 
                                   threatCalculator(Threat2_InitialFreq, Threat2_barriers), 
                                   threatCalculator(Threat3_InitialFreq, Threat3_barriers), 
                                   threatCalculator(Threat4_InitialFreq, Threat4_barriers)))
