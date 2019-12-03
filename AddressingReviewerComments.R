@@ -28,7 +28,7 @@
 ## wolfCullPropOnAdults - we assumed that the majority of a wolf cull evect ws on juveniles <- 0.1
 
 #default BRAT ----
-BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, WolfTrapping = 0.65, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
+BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, Threat1_barrier_1 = 1.716, WolfTrapping = 0.65, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 # [1] 1.025335 # This is the lambda Quatile
 # This is the top event lambda: 0.935
