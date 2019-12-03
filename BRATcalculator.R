@@ -1,0 +1,27 @@
+# Function to calculate sensitivity of certain components of BRAT
+## Used to address reviewer comments
+# we are assuming that all values generated and input in BRAT() are correct.
+# the hard coded values here are taken directly from the BRAT figure in Winder et al.
+
+BRATcalc<-function(Threat1_InitialFrequency, Threat1_barrier2,
+                   Threat2_InitialFreq, Threat2_barriers, 
+                   Threat3_InitialFreq, Threat3_barriers, 
+                   Threat4_InitialFreq, Threat4_barriers)
+  {
+  threatCalculator <- function(init, barriers) {
+    init * prod(barriers)
+  }
+  
+  
+  (topEvent <- topEventCalculator(threatCalculator(Threat1_InitialFreq, sapply(Threat1_barriers, eval)), 
+                                  threatCalculator(Threat2_InitialFreq, Threat2_barriers), 
+                                  threatCalculator(Threat3_InitialFreq, Threat3_barriers), 
+                                  threatCalculator(Threat4_InitialFreq, Threat4_barriers)))
+  # in other words, the sum of the Threat_topevents - which meets the LOPA users manual instructions
+  topEvent_Lambda <-round(((1 - topEvent) + 1), 3)
+  message("This is the top event lambda: ", topEvent_Lambda) 
+  
+  # does the top event exceed the lambda quartile?
+  print(TopEvent_lambda <- lambdaQuartile < 1 + (1-topEvent))
+}
+  
