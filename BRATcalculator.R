@@ -9,7 +9,7 @@ BRATcalc<-function(Threat1_InitialFreq, Threat1_barriers,
                    Threat4_InitialFreq, Threat4_barriers)
   {
 #calculate the lambda quiartile we would like to use.
-  lambdaQuartile <- qnorm(0.6, mean = 1, sd1) # mortality quartile is at the 60% mark of this distribution. 
+  lambdaQuartile <- qnorm(0.6, mean = 1, 0.3) # mortality quartile is at the 60% mark of this distribution. 
 # in other words, what lambda vlaue do herds need to accomplish to obtain sustainability according to ECCC's 2012 40% threshold.
 # Put this lambdaQuartile into the Target frequency of the Hazard box
 ### This is the frequency we need to try and aim above, to prevent lambda being consistently below 1, given a population sd of 0.1

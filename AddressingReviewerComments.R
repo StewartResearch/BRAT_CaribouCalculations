@@ -27,13 +27,35 @@
 ## wolfCullEffect - this is from Hervieux et al 2014 and could change with more information <- 0.186
 ## wolfCullPropOnAdults - we assumed that the majority of a wolf cull evect ws on juveniles <- 0.1
 
-#default BRAT ----
-BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
+
+# December 3
+
+# three types of unceratinty/error that we could look at:
+
+# FIRST: estimation error of the existing barriers in the BRAT:
+# default BRAT ----
+BRATcalc(0.055, c(1.716, 1.40, 0.65, 1.5, 1.0, 0.9, 1.0), 
+         0.687, c(1.325), 
+         0.019, c(1.0, 1.0, 1.0), 
+         0.016, c(1.05, 1.05, 1.05, 1.0, 1.0))
+# [1] 1.025335
+# This is the top event lambda: 0.936
+# [1] FALSE
+
+# Change each component one by one:
+BRATcalc(0.055, c(0.858, 1.4, 0.65, 0.75, 1.0, 0.9, 1.0), 
+         0.687, c(1.325), 
+         0.019, c(1.0, 1.0, 1.0), 
+         0.016, c(1.05, 1.05, 1.05, 1.0, 1.0))
+
+
+# SECOND: uncertainty around the standard deviation of the lambda curve from which we draw the lambdaQuartile
+#default BRAT function ----
+BRAT(N = 250,SadF = 0.87, recr = 0.13, sd1 = 0.1, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 # [1] 1.025335 # This is the lambda Quatile
 # This is the top event lambda: 0.935
 # [1] FALSE # this means that the top event lambda is less than (1-lambda quartile +1)
-
 
 #vary sd1
 BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.15, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
@@ -41,7 +63,7 @@ BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.15, multiplier1 = 0.9, pregR = 0.
 # [1] 1.038002
 # This is the top event lambda: 0.935
 # [1] FALSE
-BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.05, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
+BRAT(N = 250, SadF = 0.87, recr = 0.13, sd1 = 0.05, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 # [1] 1.012667
 # This is the top event lambda: 0.935
@@ -108,21 +130,28 @@ Threat1_InitialFreq<- 0.117/prod(1.716,1.4,0.975,1.5,1.0,0.9,1.0)
 BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, Threat1_InitialFreq = 0.0370, WolfTrapping = 0.65, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 
-# Response
-# Answer a question: By how much would each threat line need to change in order to either increase or decrease the Current
-# Total Top Event Lambda by 5%?
+############################################
+# try mcmc sampling each of the barrier values
+m <- 1.716 # mean
+s <- 1 # standard deviation
+# assume a normal distribtuion for each of the barriers
+set.seed(1)
+samples<-rnorm(10000, m, s)
 
-# source("CaribouCalculations_Final_Final.R")
-# 
-# #Calculate the optimazation on LOPA factor values, for each threat line
-# initialFrequency<-as.vector(c(Threat1_InitialFreq, Threat2_InitialFreq, Threat3_InitialFreq, Threat4_InitialFreq))
-# barriers<-(c(as.vector(sum(unlist(sapply(Threat1_barriers, eval)))), Threat2_barriers, Threat3_barriers, Threat4_barriers))
-# 
-# optim(par = initialFrequency, fn =  topEventCalculator(threatCalculator), method = "L-BFGS-B", lower = (topEvent - 0.05), upper = (topEvent + 0.05))
-# 
-# 
-# # now translate this into lambda values
-# # optim_lambdaUpper <-round(((1 - optim) + 1), 3)
-# 
-# # Do for other threat lines too. 
+cummean<- function(x){
+        cumsum(x)/seq_along(x)
+}
+
+plot(cummean(samples), type="l", xlab="Sample", ylab="Cumulative mean",
+     panel.first=abline(h=0, col="red"), las=1)
+
+for (i in seq_len(30))
+        lines(cummean(rnorm(10000, m, s)),
+              col=rgb(runif(1), runif(1), runif(1), .5))
+
+summary(samples)
+p <- 0.025
+a.tru <-qnorm(p,m,s)
+#estimate the point that the 2.5% probability density is below using mcmc:
+a.mc<-unname(quantile(samples,p))
       
