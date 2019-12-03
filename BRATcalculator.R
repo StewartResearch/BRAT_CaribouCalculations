@@ -8,6 +8,14 @@ BRATcalc<-function(Threat1_InitialFrequency, Threat1_barrier2,
                    Threat3_InitialFreq, Threat3_barriers, 
                    Threat4_InitialFreq, Threat4_barriers)
   {
+# Top Event Frequency Function
+# calculate the top event frequency, before mitigation actions take place.
+  topEventCalculator <- function(...) {
+  sum(unlist(list(...)))
+  }
+   
+#Threat calculator
+# calculate the total product of each threat line
   threatCalculator <- function(init, barriers) {
     init * prod(barriers)
   }
