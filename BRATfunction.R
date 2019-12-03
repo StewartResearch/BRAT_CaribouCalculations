@@ -1,5 +1,6 @@
+# function to calculate the values of the riht hand side of the BRAT in Winder et al.
 
-BRAT<-function(N, SadF, recr, sd1,  multiplier1, Threat1_barrier_1, WolfTrapping, pregR, sexRatio, wolfCullEffect, wolfCullPropOnAdults){
+BRAT<-function(N, SadF, recr, sd1,  multiplier1, pregR, sexRatio, wolfCullEffect, wolfCullPropOnAdults){ 
   # variables
   ## N = herd population size (EC 2012)
   ## SadF = adult female survival (EC 2012)
@@ -11,9 +12,7 @@ BRAT<-function(N, SadF, recr, sd1,  multiplier1, Threat1_barrier_1, WolfTrapping
   ## multiplier 1 - this was initially 90% (90% of adult female mortality is due to Threat line 1)
   ## wolfCullEffect - this is from Hervieux et al 2014 and could change with more information <- 0.186
   ## wolfCullPropOnAdults - we assumed that the majority of a wolf cull evect ws on juveniles <- 0.1
-  ## Threat1_barrier_1 - this was initially calculated to be 1.716 from the initial BRAT
-  ### But this value is required to calcualte the Initial frequency
-  ### Here we will provide the Threat1_barrier_1 so assuming it was calculated correctly in the initial BRAT. 
+
   
   
   
@@ -40,7 +39,7 @@ BRAT<-function(N, SadF, recr, sd1,  multiplier1, Threat1_barrier_1, WolfTrapping
   #########
   # Set the barriers here -- this would be the numbers that go into the BRAT figure
   # you might have to conduct several of the below steps before dpoing this one, if the barriers are not estimated from literature.
-  Threat1_barriers <- c(quote(Threat1_barrier_1), 1.4, WolfTrapping, 1.5, 1.0, 0.9, 1.0) # in units of Initial Frequency
+  Threat1_barriers <- c(quote(Threat1_barrier_1), 1.4, 0.65, 1.5, 1.0, 0.9, 1.0) # in units of Initial Frequency
   Threat2_barriers <- quote(c(Threat2_barrier_1)) # in units of Initial Frequency # This is derived from data below
   Threat3_barriers <- c(1.00, 1.00, 1.00) # in units of Initial Frequency
   Threat4_barriers <- c(1.05, 1.05, 1.05, 1.00, 1.0)
@@ -140,12 +139,12 @@ BRAT<-function(N, SadF, recr, sd1,  multiplier1, Threat1_barrier_1, WolfTrapping
   # by predation, the effectiveness of wolf controls made sense (i.e. less than 100%) across all study situations. We therefore assume
   # that if less than 10% of females are dying, 4% will be due to wolf predation, and the other 6% will be due to other causes (highlighted
 #   # in threats 3 and 4).
-#   if(MortSadF < 0.10) {
-#    Threat1_InitialFreq <- MortSadF*0.4
-# 
-#   } else { # if not, we back-calculated the required threat value:
-#    Threat1_InitialFreq <- 0.05549 # ASSUMPTION
-#     # This calculation involved back calculating from the wolf mitigation initial frequency (0.814), to the juvenile predation threat frequency,
+   if(MortSadF < 0.10) {
+    Threat1_InitialFreq <- MortSadF*0.4
+ 
+   } else { # if not, we back-calculated the required threat value:
+    Threat1_InitialFreq <- 0.05549 # ASSUMPTION
+#    # This calculation involved back calculating from the wolf mitigation initial frequency (0.814), to the juvenile predation threat frequency,
 #     # translating this value into lambda units of wolf predation and compensatory predation, calculating the ratio between these
 #   # predation effects, and applying the ratio to adult wolf vs compensatory predation. From there we could substitute in the current
 #    # top event frequency (known from Environment Canada data), to get this inital frequency value.
@@ -156,12 +155,9 @@ BRAT<-function(N, SadF, recr, sd1,  multiplier1, Threat1_barrier_1, WolfTrapping
 #   ###### See how we calculated this at the end of the script ('Other Information').
 # }
 
-browser()
-  Threat1_barrier_1 <- Threat1_barrier_1
-  #Threat1_barrier_1 <-  Threat1_multiplier / (Threat1_InitialFreq * prod(unlist(Threat1_barriers[-1])))
-  Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
-  Threat1_InitialFreq <- Threat1_topEvent/prod(sapply(Threat1_barriers, eval))
- ### START HERE --- issue with Threat1_barriers
+    Threat1_barrier_1 <-  Threat1_multiplier / (Threat1_InitialFreq * prod(unlist(Threat1_barriers[-1])))
+    Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
+    Threat1_InitialFreq <- Threat1_topEvent/prod(sapply(Threat1_barriers, eval))
   
   # Threat 2 - Juvenile predation
   ### Initial Frequency
@@ -325,5 +321,5 @@ browser()
   
   # does the top event exceed the lambda quartile?
   print(TopEvent_lambda <- lambdaQuartile < 1 + (1-topEvent))
-  
+   }
 }
