@@ -1,14 +1,15 @@
 
-Mitigate<-function(mitigate_cull, mitigate_restoration, mitigate_penning){
+Mitigate<-function(mitigate_cull, mitigate_restoration, mitigate_penning, topEvent){
 # variables
   ## cull - 0.814 # from Hervieux et al. 2014 and BRAT() Threat1_barrier1 rationale
   ## restoration - from BRAT function mitigate_restoration - was 0.957 <- 1-(Threat_LambdaEffect[[1]][2] + (0.5*Threat_LambdaEffect[[1]][1])) # 100% of threat 1 barrier2 lambda (restoration), plut 50% of threat1_barrier1 (predation - which interacts with seismic lines)
   ## penning - 0.95 # from discussions with Scott McNay
+  ## topEvent - take this from the BRAT()
   
 ##################################################################################################
 # step 8: what about after mitigation? ----
 postMitigate <- function(topEvent, mitigate) {
-  topEvent * mitigate
+  topEvent * prod(mitigate_cull, mitigate_restoration, mitigate_penning)
 }
 
 #mitigate_cull <- 0.814 # from Hervieux et al. Threat1_barrier1 rationale

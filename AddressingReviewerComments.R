@@ -89,7 +89,19 @@ BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.8, surv = 0.8, 
 BRAT(N = 250, SadF = 0.89, recr = 0.13, sd1 = 0.1, multiplier1 = 0.9, surv = 0.8, pregR = 0.9, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 
+############################################################################################################
 
+# Calculating BRAT for Maxhamish
+# from BCOGRIS reports between 2013 and 2016:
+#(300+132+102+81+100)/4
+# 178.75
+# N = 179, and
+#(0.35+12.5+44.6+50)/4
+#26.8625
+#recr = 0.27
+#SadF = 0.85, as those data are not available and are this is the assumed national average (ECCC 2011)
+BRAT(N = 179, SadF = 0.85, recr = 0.27, sd1 = 0.1, multiplier1 = 0.9, surv = 0.8, pregR = 0.9, sexRatio = 0.5, 
+     wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 
 
 # ############################################

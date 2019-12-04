@@ -1,17 +1,20 @@
 # function to calculate the values of the riht hand side of the BRAT in Winder et al.
 
-BRAT<-function(N, SadF, recr, sd1,  multiplier1, pregR, sexRatio, wolfCullEffect, wolfCullPropOnAdults){ 
+BRAT<-function(N, SadF, recr, sd1,  multiplier1, pregR, surv, sexRatio, wolfCullEffect, wolfCullPropOnAdults){ 
   # variables
   ## N = herd population size (EC 2012)
   ## SadF = adult female survival (EC 2012)
   ## pregR 0.9 - from Scott McNay - roughly 90% of adult females are pregnant each year
   ## sexRatio = 0.5
+  ## surv = survival of calves to their first day without predators. multiplied by sex ratio to get juvenile female estimate. 
+  ### Initially set to 0.8
   
   #variables that we can change:
   ## sd1 - this was initially 0.1 (from Sutherland sensitivity analysis)
   ## multiplier 1 - this was initially 90% (90% of adult female mortality is due to Threat line 1)
   ## wolfCullEffect - this is from Hervieux et al 2014 and could change with more information <- 0.186
   ## wolfCullPropOnAdults - we assumed that the majority of a wolf cull evect ws on juveniles <- 0.1
+  
 
   
   
@@ -91,7 +94,7 @@ BRAT<-function(N, SadF, recr, sd1,  multiplier1, pregR, sexRatio, wolfCullEffect
   # juvenile survival to the fist day of life
   
   #sexRatio<- 0.5 # only half of the animals born will be female 
-  surv1stDay <- 0.8 * sexRatio # DATA/ASSUMPTION # juvenile female survival to the first day - from maternal pen observations 
+  surv1stDay <- surv * sexRatio # DATA/ASSUMPTION # juvenile female survival to the first day - from maternal pen observations 
   # (Scott McNay pers com, Klinse-Za maternal penning project)
   # also similar to observations in northeastern alberta (McLoughlin et al. 2003)
   
@@ -316,7 +319,8 @@ env <- environment()
                                   threatCalculator(Threat3_InitialFreq, Threat3_barriers), 
                                   threatCalculator(Threat4_InitialFreq, Threat4_barriers)))
   # in other words, the sum of the Threat_topevents - which meets the LOPA users manual instructions
-  topEvent_Lambda <-round(((1 - topEvent) + 1), 3)
+ message("This is the top event: ", topEvent)
+   topEvent_Lambda <-round(((1 - topEvent) + 1), 3)
   message("This is the top event lambda: ", topEvent_Lambda) 
   
   # does the top event exceed the lambda quartile?
