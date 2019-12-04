@@ -51,107 +51,69 @@ BRATcalc(0.055, c(0.858, 1.4, 0.65, 0.75, 1.0, 0.9, 1.0),
 
 # SECOND: uncertainty around the standard deviation of the lambda curve from which we draw the lambdaQuartile
 #default BRAT function ----
-BRAT(N = 250,SadF = 0.87, recr = 0.13, sd1 = 0.1, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
+BRAT(N = 250,SadF = 0.87, recr = 0.13, sd1 = 0.1, multiplier1 = 0.9, surv = 0.8, pregR = 0.9, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 # [1] 1.025335 # This is the lambda Quatile
 # This is the top event lambda: 0.935
 # [1] FALSE # this means that the top event lambda is less than (1-lambda quartile +1)
 
 #vary sd1
-BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.15, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
+BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.15, multiplier1 = 0.9, surv = 0.8, pregR = 0.9, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 # [1] 1.038002
 # This is the top event lambda: 0.935
 # [1] FALSE
-BRAT(N = 250, SadF = 0.87, recr = 0.13, sd1 = 0.05, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
+BRAT(N = 250, SadF = 0.87, recr = 0.13, sd1 = 0.05, multiplier1 = 0.9, surv = 0.8, pregR = 0.9, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 # [1] 1.012667
 # This is the top event lambda: 0.935
 # [1] FALSE
 
 
+# THIRD: uncertainty around the weighting of the threat lines
 ## vary multiplier1 ##
-BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 1.0, pregR = 0.9, sexRatio = 0.5, 
+BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 1.0, surv = 0.8, pregR = 0.9, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 # [1] 1.025335
 # This is the top event lambda: 0.935
 # [1] FALSE
 
-BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.45, pregR = 0.9, sexRatio = 0.5, 
+BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.8, surv = 0.8, pregR = 0.9, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 # [1] 1.025335
 # This is the top event lambda: 0.935
 # [1] FALSE
 
-
-## vary pregR ##
-BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9, pregR = 1.0, sexRatio = 0.5, 
-     wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
-# [1] 1.025335
-# This is the top event lambda: 0.935
-# [1] FALSE
-BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.45,pregR = 1.0, sexRatio = 0.5, 
-     wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
-# [1] 1.025335
-# This is the top event lambda: 0.935
-# [1] FALSE
-
-## vary wolfcullEffect ##
-BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9,pregR = 0.9, sexRatio = 0.5, 
-     wolfCullEffect = 0.279, wolfCullPropOnAdults = 0.1)
-# [1] 1.025335
-# This is the top event lambda: 0.935
-# [1] FALSE
-BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9,pregR = 0.9, sexRatio = 0.5, 
-     wolfCullEffect = 0.903, wolfCullPropOnAdults = 0.1)
-# [1] 1.025335
-# This is the top event lambda: 0.935
-# [1] FALSE
-
-
-## vary WolfCullPropOnAdults
-BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9,pregR = 0.9, sexRatio = 0.5, 
-     wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.15)
-# [1] 1.025335
-# This is the top event lambda: 0.935
-# [1] FALSE
-BRAT(N = 250, SadF = 0.87,recr = 0.13, sd1 = 0.1, multiplier1 = 0.9,pregR = 0.9, sexRatio = 0.5, 
-     wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.05)
-# [1] 1.025335
-# This is the top event lambda: 0.935
-# [1] FALSE
-
-## vary WolfTrapping
-#Threat1_InitialFreq<- Threat1_topEvent/prod(sapply(Threat1_barriers, eval))
-# normal scenario
-Threat1_InitialFreq<- 0.117/prod(1.716,1.4,0.65,1.5,1.0,0.9,1.0)
-# our scenario
-Threat1_InitialFreq<- 0.117/prod(1.716,1.4,0.975,1.5,1.0,0.9,1.0)
-BRAT(N = 250,SadF = 0.87,recr = 0.13, sd1 = 0.1, Threat1_InitialFreq = 0.0370, WolfTrapping = 0.65, multiplier1 = 0.9, pregR = 0.9, sexRatio = 0.5, 
+## FOURTH: calculating juvenile predation inital frequency
+# vary the surv, pregR, and SadF to investigate the sensitivity of Threat2_InitialFrequency
+BRAT(N = 250, SadF = 0.89, recr = 0.13, sd1 = 0.1, multiplier1 = 0.9, surv = 0.8, pregR = 0.9, sexRatio = 0.5, 
      wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1)
 
-############################################
-# try mcmc sampling each of the barrier values
-m <- 1.716 # mean
-s <- 1 # standard deviation
-# assume a normal distribtuion for each of the barriers
-set.seed(1)
-samples<-rnorm(10000, m, s)
 
-cummean<- function(x){
-        cumsum(x)/seq_along(x)
-}
 
-plot(cummean(samples), type="l", xlab="Sample", ylab="Cumulative mean",
-     panel.first=abline(h=0, col="red"), las=1)
 
-for (i in seq_len(30))
-        lines(cummean(rnorm(10000, m, s)),
-              col=rgb(runif(1), runif(1), runif(1), .5))
-
-summary(samples)
-p <- 0.025
-a.tru <-qnorm(p,m,s)
-#estimate the point that the 2.5% probability density is below using mcmc:
-a.mc<-unname(quantile(samples,p))
-      
+# ############################################
+# # try mcmc sampling each of the barrier values
+# m <- 1.716 # mean
+# s <- 1 # standard deviation
+# # assume a normal distribtuion for each of the barriers
+# set.seed(1)
+# samples<-rnorm(10000, m, s)
+# 
+# cummean<- function(x){
+#         cumsum(x)/seq_along(x)
+# }
+# 
+# plot(cummean(samples), type="l", xlab="Sample", ylab="Cumulative mean",
+#      panel.first=abline(h=0, col="red"), las=1)
+# 
+# for (i in seq_len(30))
+#         lines(cummean(rnorm(10000, m, s)),
+#               col=rgb(runif(1), runif(1), runif(1), .5))
+# 
+# summary(samples)
+# p <- 0.025
+# a.tru <-qnorm(p,m,s)
+# #estimate the point that the 2.5% probability density is below using mcmc:
+# a.mc<-unname(quantile(samples,p))
+#       
