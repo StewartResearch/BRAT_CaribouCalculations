@@ -10,7 +10,8 @@ R code describing how to calculate the target frequency for a BRAT critical even
 This code emulates the BowtieXP software use for Bowtie Risk Analysis Tool (BRAT).
 
 ########################################################
-Use the BRATfunction.R script to run the left hand side of the BRAT for each specific caribou herd/study area of interest. This function require knowledge about the population size, adult female survival, and recruitment. It makes assumtions (which you can specify as parameter values) of the standard deviation of the lambda curve, weight assigned to each threat line, pregancy rate, calf survival to day 1, calf secondary sex ratio, Effect of a wolf cull, and proportion of wolf cull's effect on adults versus juveniles. 
+Use the BRATfunction.R script to run the left hand side of the BRAT for each specific caribou herd/study area of interest. This function
+require knowledge about the population size, adult female survival, and recruitment. It makes assumtions (which you can specify as parameter values) of the standard deviation of the lambda curve, weight assigned to each threat line, pregancy rate, calf survival to day 1, calf secondary sex ratio, Effect of a wolf cull, and proportion of wolf cull's effect on adults versus juveniles. 
 
 The BRAT function can also be used to test out the sensitivity of a BRAT, by altering one or more parameters within the function, and observing how the top event lambda value changes. 
 
