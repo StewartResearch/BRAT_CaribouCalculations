@@ -2,8 +2,9 @@
 
 BRAT<-function(N, SadF, recr, sd1,  multiplier1, pregR, surv, sexRatio, wolfCullEffect, wolfCullPropOnAdults){ 
   # variables
-  ## N = herd population size (EC 2012)
-  ## SadF = adult female survival (EC 2012)
+  ## N = herd population size (EC 2011)
+  ## recr = recruitment (EC 2008)
+  ## SadF = adult female survival (EC 2011)
   ## pregR 0.9 - from Scott McNay - roughly 90% of adult females are pregnant each year
   ## sexRatio = 0.5
   ## surv = survival of calves to their first day without predators. multiplied by sex ratio to get juvenile female estimate. 
@@ -161,6 +162,8 @@ env <- environment()
     Threat1_barrier_1 <-  Threat1_multiplier / (Threat1_InitialFreq * prod(unlist(Threat1_barriers[-1])))
     Threat1_topEvent <- Threat1_multiplier # proportion of caribou mortality rate due to predation, rather than total adult female mortality
     Threat1_InitialFreq <- Threat1_topEvent/prod(sapply(Threat1_barriers, eval, envir = env))
+    
+    message("This is the top event: ", Threat1_topEvent)
   
   # Threat 2 - Juvenile predation
   ### Initial Frequency
@@ -289,6 +292,7 @@ env <- environment()
   #Threat1_LambdaEffect = wolvesOnAdults + otherOnAdults # check point if desired
   #Threat2_LambdaEffect = wolvesOnAdults + otherOnJuvs # check point if desired
   
+
   ########################
   # Step 6: Calculate the Current Total Top Event and Current Consequency (i.e. Mitigate) values ----
   # these values can be changed to better reflect data as it becomes available:
@@ -313,7 +317,7 @@ env <- environment()
     init * prod(barriers)
   }
   
-  
+   
   (topEvent <- topEventCalculator(threatCalculator(Threat1_InitialFreq, sapply(Threat1_barriers, eval, envir = env)), 
                                   threatCalculator(Threat2_InitialFreq, Threat2_barriers), 
                                   threatCalculator(Threat3_InitialFreq, Threat3_barriers), 
@@ -321,9 +325,10 @@ env <- environment()
   # in other words, the sum of the Threat_topevents - which meets the LOPA users manual instructions
  message("This is the top event: ", topEvent)
    topEvent_Lambda <-round(((1 - topEvent) + 1), 3)
-  message("This is the top event lambda: ", topEvent_Lambda) 
-  
+print("This is the top event lambda: ", topEvent_Lambda) 
   # does the top event exceed the lambda quartile?
-  print(TopEvent_lambda <- lambdaQuartile < 1 + (1-topEvent))
-   }
+print(TopEvent_lambda <- lambdaQuartile < 1 + (1-topEvent))
+browser()
+   }    
+
 }
