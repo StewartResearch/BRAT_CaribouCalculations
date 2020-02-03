@@ -11,7 +11,7 @@ This code emulates the BowtieXP software use for Bowtie Risk Analysis Tool (BRAT
 
 ###
 ###
-To run the SpaDES module for this BRAT, go to the modules folder than run the BRATframework.Rmd file
+To run the SpaDES module for this BRAT, go to the modules folder then run the BRATframework.Rmd file
 ###
 ###
 
