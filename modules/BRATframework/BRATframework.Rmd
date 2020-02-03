@@ -1,0 +1,83 @@
+---
+title: "BRATframework"
+author: ""
+date: "30 January 2020"
+output: pdf_document
+---
+
+# Overview
+
+Provide an overview of what the module does / how to use the module.
+
+Module documentation should be written so that others can use your module.
+This is a template for module documentation, and should be changed to reflect your module.
+
+## R Markdown
+
+R Markdown syntax allows R code, outputs, and figures to be rendered in the documentation.
+
+For help writing in R Markdown, see http://rmarkdown.rstudio.com/.
+
+# Usage
+
+```{r module_usage}
+library(SpaDES)
+
+setPaths(cachePath = "cache", 
+         modulePath = file.path("Z:/GitHub/BRAT_CaribouCalculations-master/modules"), 
+         inputPath = "inputs", 
+         outputPath = "outputs", 
+         rasterPath = "rasters")
+getPaths() # shows where the 4 relevant paths are
+
+times <- list(start = 0, end = 10)
+
+parameters <-list(
+  #.progress = list(type = "text", interval = 1), # for a progress bar
+  ## If there are further modules, each can have its own set of parameters:
+  
+  # These parameters are currently listed for the Chinchaga herd. Switch N, SadF, and recr based on the
+  # herd you are investigating.
+  #first, for the general BRAT function - this runs the left hand side of a Bowtie diagram
+  BRAT = list(N = 250, SadF = 0.87, recr = 0.065, sd1 = 0.1, multiplier1 = 0.9, pregR = 0.9, 
+                       surv = 0.8, sexRatio = 0.5, wolfCullEffect = 0.186, wolfCullPropOnAdults = 0.1), 
+   list(mitigate_penning = 0.95)
+  
+)
+modules <- list("BRATframework")
+objects <- list()
+inputs <- list()
+outputs <- list()
+
+mySim <- simInit(times = times, params = parameters, modules = modules,
+                 objects = objects)
+
+mySimOut <- spades(mySim)
+```
+
+# Events
+
+Describe what happens for each event type.
+
+## Plotting
+
+Write what is plotted.
+
+## Saving
+
+Write what is saved.
+
+# Data dependencies
+
+## Input data
+
+How to obtain input data, and a description of the data required by the module.
+If `sourceURL` is specified, `downloadData("BRATframework", "path/to/modules/dir")` may be sufficient.
+
+## Output data
+
+Description of the module outputs.
+
+# Links to other modules
+
+Describe any anticipated linkages to other modules.
